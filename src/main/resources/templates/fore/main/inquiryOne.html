@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>单品询价</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/inquiryOnePage::html" ></div>
+</div>
+<script>
+    //日期选择器
+    laydate.render({
+        elem: '#deadline'
+    });
+
+    $(function () {
+        getAllSup();
+    });
+    function getAllSup() {
+        $.ajax({
+            type:"get",
+            url:"findAllSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                for(var i = 0 ; i < data.length ; i++){
+                    $("#allSupplier").append('<input name="supplier" type="checkbox" style="vertical-align:middle;margin-top: -3px;" value="'+data[i].supplierCode+'">'+data[i].supplierName+"<br>");
+                }
+            }
+        })
+    }
+    //checkbox 全选与全不选
+    function setAllNo(){
+        var box = document.getElementById("checkAll");
+        var loves = document.getElementsByName("supplier");
+        if(box.checked == false){
+            for (var i = 0; i < loves.length; i++) {
+                loves[i].checked = false;
+            }
+        }else{
+            for (var i = 0; i < loves.length; i++) {
+                loves[i].checked = true;
+            }
+        }
+    }
+    
+    //当填写完产品名称时，跳出弹框 选择规格型号
+    function showAllSpecification() {
+        var productName = $("#productName").val();
+        $.ajax({
+            type:"get",
+            data:{"productName":productName},
+            url:"findAllSpecification",
+            async:false,
+            success:function (data) {
+                $("#allSpecification").html("");
+                for(var i = 0 ; i < data.length ; i++){
+                    $("#allSpecification").append("<tr>"
+                        +"<td>"+data[i]+"</td>"
+                        +"<td>"+'<a onclick="chooseSpecification(this)">选择</a>'+"</td>"
+                        +"</tr>")
+                }
+            }
+        })
+        $("#myModal").modal('show');
+    }
+
+    function chooseSpecification(obj) {
+        var specification = obj.parentNode.parentNode.cells[0].innerText;
+        $("#specification").val(specification);
+        $("#myModal").modal('hide');
+    }
+
+    function saveInquiryOne() {
+        var project = $("#project").val();
+        var type = $("#type option:selected").val();
+        var productName = $("#productName").val();
+        var specification = $("#specification").val();
+        var brand = $("#brand").val();
+        var brandCode = $("#brandCode").val();
+        var quantity = $("#quantity").val();
+        var unit = $("#unit").val();
+        var deadline = $("#deadline").val();
+        var note = $("#note").val();
+
+        var name = $("#productPic").val();
+        var picNames = name.split("\\");
+        var le = picNames.length - 1;
+        var targetFile = picNames[le];
+
+        var obj = document.getElementsByName("supplier");
+        var check_val = [];
+        for (k in obj) {
+            if (obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        var suppliers = "";
+        for(var i = 0 ; i < check_val.length ; i++){
+            if(i == 0){
+                suppliers = suppliers+check_val[i];
+            }else{
+                suppliers = suppliers+","+check_val[i];
+            }
+        }
+
+        if(type == ""){
+            $.message({
+                message:"请选择询价类型",
+                type:"error"
+            });
+            return false;
+        }
+        if(productName == ""){
+            $.message({
+                message:"请填写产品名称",
+                type:"error"
+            });
+            return false;
+        }
+        if(specification == ""){
+            $.message({
+                message:"请选择规格型号",
+                type:"error"
+            });
+            return false;
+        }
+        if(quantity == ""){
+            $.message({
+                message:"请填写需求数量",
+                type:"error"
+            });
+            return false;
+        }
+        if(unit == ""){
+            $.message({
+                message:"请填写数量单位",
+                type:"error"
+            });
+            return false;
+        }
+        if(deadline == ""){
+            $.message({
+                message:"请选择截止日期",
+                type:"error"
+            });
+            return false;
+        }
+
+        var data = {"project":project , "type":type , "productName":productName , "specification":specification , "brand":brand , "brandCode":brandCode , "quantity":quantity , "unit":unit , "deadline":deadline , "note":note , "picName":targetFile , "suppliers":suppliers};
+
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"writeOneInquiry",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"询价已发起",
+                        type:"success"
+                    })
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    function uploadPic() {
+        $.ajaxFileUpload({
+            type:"post",
+            fileElementId:"productPic",
+            url:"saveProductPic",
+            async:false,
+            dataType:'text',
+            success:function(data){
+                if(data == "OK"){
+
+                }else{
+                    $.message({
+                        message:data,
+                        type:'error'
+                    });
+                }
+            },
+            error:function(){
+                alert("设备类型文件上传出错");
+            }
+        })
+    }
+</script>
+</body>
+</html>

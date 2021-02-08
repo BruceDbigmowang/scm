@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/module/header::html">
+    <head >
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>诺而为SCM登录页面</title>
+    </head>
+<body style="background-image: url(./image/login.png);background-size: 100%;background-repeat: no-repeat;">
+<div id="loginMainArea" style="position:absolute;width:50%;height:100%;top: 0%;left: 50%;background-color: white">
+    <div th:replace="include/login/loginPage::html"></div>
+    <div th:replace="include/module/footer::html"></div>
+</div>
+</body>
+</html>

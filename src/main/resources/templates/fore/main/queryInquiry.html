@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>询价单查询</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/queryInquiryPage::html" ></div>
+</div>
+
+<script>
+    //日期选择器
+    laydate.render({
+        elem: '#begin'
+    });
+    //日期选择器
+    laydate.render({
+        elem: '#end'
+    });
+
+    var start = 0;
+    var pages = 0;
+
+    $(function () {
+        getAllInquiry();
+    })
+
+    //加载所有询价单数据
+    function getAllInquiry() {
+        start = 0;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findAllInquiry",
+            async:false,
+            success:function (data) {
+                var inquirys = data.lists;
+                $("#inquiryTotal").html("");
+                for(var i = 0 ; i < inquirys.length ; i++){
+                    if(inquirys[i].status == "C"){
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+
+                }
+
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="getAllInquiry()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function getAllInquiryNext() {
+        if(start < pages - 1){
+            start = start + 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findAllInquiry",
+                async:false,
+                success:function (data) {
+                    var inquirys = data.lists;
+                    $("#inquiryTotal").html("");
+                    for(var i = 0 ; i < inquirys.length ; i++){
+                        if(inquirys[i].status == "C"){
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="getAllInquiry()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }else{
+            $.message({
+                message:"已是最后一页",
+                type:"warning"
+            })
+        }
+    }
+
+    function getAllInquiryPrevious() {
+        if(start == 0){
+            $.message({
+                message:"已是第一页",
+                type:"warning"
+            })
+        }else{
+            start = start - 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findAllInquiry",
+                async:false,
+                success:function (data) {
+                    var inquirys = data.lists;
+                    $("#inquiryTotal").html("");
+                    for(var i = 0 ; i < inquirys.length ; i++){
+                        if(inquirys[i].status == "C"){
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+
+                    }
+
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="getAllInquiry()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function getAllInquiryLast() {
+        start = pages - 1;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findAllInquiry",
+            async:false,
+            success:function (data) {
+                var inquirys = data.lists;
+                $("#inquiryTotal").html("");
+                for(var i = 0 ; i < inquirys.length ; i++){
+                    if(inquirys[i].status == "C"){
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+
+                }
+
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="getAllInquiry()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getAllInquiryLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    //根据条件查询 加载获得的数据
+
+    function getInquiryByCondition() {
+        var begin = $("#begin").val();
+        var end = $("#end").val();
+        var project = $("#project").val();
+        var type = $("#inquiryType").val();
+        var status = $("#inquiryStatus option:selected").val();
+        start = 0;
+        var data = {"start":start , "begin":begin , "end":end , "project":project , "type":type , "status":status};
+        $.ajax({
+            type:"get",
+            data:data,
+            url:"findSomeInquiry",
+            async:false,
+            success:function (data) {
+                var inquirys = data.lists;
+                $("#inquiryTotal").html("");
+                for(var i = 0 ; i < inquirys.length ; i++){
+                    if(inquirys[i].status == "C"){
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                }
+
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="getInquiryByCondition()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function getInquiryByConditionPrevious() {
+        if(start == 0){
+            $.message({
+                message:"已是第一页",
+                type:"warning"
+            })
+        }else{
+            var begin = $("#begin").val();
+            var end = $("#end").val();
+            var project = $("#project").val();
+            var type = $("#inquiryType").val();
+            var status = $("#inquiryStatus option:selected").val();
+            start = start - 1;
+            var data = {"start":start , "begin":begin , "end":end , "project":project , "type":type , "status":status};
+            $.ajax({
+                type:"get",
+                data:data,
+                url:"findSomeInquiry",
+                async:false,
+                success:function (data) {
+                    var inquirys = data.lists;
+                    $("#inquiryTotal").html("");
+                    for(var i = 0 ; i < inquirys.length ; i++){
+                        if(inquirys[i].status == "C"){
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="getInquiryByCondition()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function getInquiryByConditionNext() {
+        if(start == pages - 1){
+            $.message({
+                message:"已是最后一页",
+                type:"warning"
+            })
+        }else{
+            var begin = $("#begin").val();
+            var end = $("#end").val();
+            var project = $("#project").val();
+            var type = $("#inquiryType").val();
+            var status = $("#inquiryStatus option:selected").val();
+            start = start + 1;
+            var data = {"start":start , "begin":begin , "end":end , "project":project , "type":type , "status":status};
+            $.ajax({
+                type:"get",
+                data:data,
+                url:"findSomeInquiry",
+                async:false,
+                success:function (data) {
+                    var inquirys = data.lists;
+                    $("#inquiryTotal").html("");
+                    for(var i = 0 ; i < inquirys.length ; i++){
+                        if(inquirys[i].status == "C"){
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#inquiryTotal").append("<tr>"
+                                +"<td>"+inquirys[i].inquiryID+"</td>"
+                                +"<td>"+inquirys[i].inquiryDate+"</td>"
+                                +"<td>"+inquirys[i].project+"</td>"
+                                +"<td>"+inquirys[i].inquiryType+"</td>"
+                                +"<td>"+inquirys[i].deadline+"</td>"
+                                +"<td>"+inquirys[i].statusDes+"</td>"
+                                +"<td>"+inquirys[i].inquiryName+"</td>"
+                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="getInquiryByCondition()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function getInquiryByConditionLast() {
+        var begin = $("#begin").val();
+        var end = $("#end").val();
+        var project = $("#project").val();
+        var type = $("#inquiryType").val();
+        var status = $("#inquiryStatus option:selected").val();
+        start = pages - 1;
+        var data = {"start":start , "begin":begin , "end":end , "project":project , "type":type , "status":status};
+        $.ajax({
+            type:"get",
+            data:data,
+            url:"findSomeInquiry",
+            async:false,
+            success:function (data) {
+                var inquirys = data.lists;
+                $("#inquiryTotal").html("");
+                for(var i = 0 ; i < inquirys.length ; i++){
+                    if(inquirys[i].status == "C"){
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#inquiryTotal").append("<tr>"
+                            +"<td>"+inquirys[i].inquiryID+"</td>"
+                            +"<td>"+inquirys[i].inquiryDate+"</td>"
+                            +"<td>"+inquirys[i].project+"</td>"
+                            +"<td>"+inquirys[i].inquiryType+"</td>"
+                            +"<td>"+inquirys[i].deadline+"</td>"
+                            +"<td>"+inquirys[i].statusDes+"</td>"
+                            +"<td>"+inquirys[i].inquiryName+"</td>"
+                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                }
+
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="getInquiryByCondition()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="getInquiryByConditionLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    //跳转至询价单详情页面
+    function toDetailPage(obj) {
+        var inquiryID = obj.parentNode.parentNode.cells[0].innerText;
+        window.location.href="foreInquiryDetail?inquiryID="+inquiryID;
+    }
+
+    //关闭询价单
+    function closeInquiryList(obj) {
+        var inquiryID = obj.parentNode.parentNode.cells[0].innerText;
+        var result = confirm("是否关闭询价单："+inquiryID+"?");
+        if(result == true){
+            $.ajax({
+                type:"put",
+                data:{"inquiryID":inquiryID},
+                url:"closeInquiry",
+                async:false,
+                success:function (data) {
+                    if(data == "OK"){
+                        $.message({
+                            message:"询价已关闭",
+                            type:"success"
+                        });
+                        getInquiryByCondition();
+                    }else{
+                        $.message({
+                            message:data,
+                            type:"error"
+                        })
+                    }
+                }
+            })
+        }
+    }
+</script>
+
+</body>
+</html>

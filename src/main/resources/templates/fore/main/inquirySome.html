@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>批量询价</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/inquirySomePage::html" ></div>
+</div>
+<script>
+    //日期选择器
+    laydate.render({
+        elem: '#deadline'
+    });
+
+    $(function () {
+        getAllSup();
+        $("#allMaterial").hide();
+    });
+    function getAllSup() {
+        $.ajax({
+            type:"get",
+            url:"findAllSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                for(var i = 0 ; i < data.length ; i++){
+                    $("#allSupplier").append('<input name="supplier" type="checkbox" style="vertical-align:middle;margin-top: -3px;" value="'+data[i].supplierCode+'">'+data[i].supplierName+"<br>");
+                }
+            }
+        })
+    }
+
+    function sendInquiry() {
+        var project = $("#project").val();
+        var type = $("#type option:selected").val();
+        if(type == ""){
+            $.message({
+                message:"请选择类型",
+                type:"error"
+            });
+            return false;
+        }
+        var deadline = $("#deadline").val();
+        if(deadline == ""){
+            $.message({
+                message:"请选择截止日期",
+                type:"error"
+            });
+            return false;
+        }
+        var obj = document.getElementsByName("supplier");
+        var check_val = [];
+        for (k in obj) {
+            if (obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        if(check_val.length == 0){
+            $.message({
+                message:"请选择供应商",
+                type:"error"
+            });
+            return false;
+        }
+        var picNames = [];
+        $("input[name='picName']").each(function () {
+            picNames.push($(this).val());
+        });
+        var picStr = "";
+        for(var i = 0 ; i < picNames.length ; i++){
+            if(i == 0){
+                picStr = picStr+picNames[i];
+            }else{
+                picStr = picStr+","+picNames[i];
+            }
+        }
+        var suppliers = "";
+        for(var i = 0 ; i < check_val.length ; i++){
+            if(i == 0){
+                suppliers = suppliers+check_val[i];
+            }else{
+                suppliers = suppliers+","+check_val[i];
+            }
+        }
+
+        var obj = document.getElementById("materialTB");
+        var cellLength = obj.rows.length;
+        if(cellLength == 0){
+            $.message({
+                message:"请导入物料信息",
+                type:"error"
+            });
+            return false;
+        }
+
+        var data = {"project":project , "type":type , "deadline":deadline , "picNames":picStr, "suppliers":suppliers};
+        $.ajaxFileUpload({
+            type:"post",
+            data:data,
+            fileElementId:"inquiryFile",
+            url:"writeSomeInquiry",
+            async:false,
+            dataType:'text',
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"已发起询价",
+                        type:"success"
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:"success"
+                    });
+                }
+            }
+        })
+    }
+
+    function showDetail() {
+        $.ajaxFileUpload({
+            type:"post",
+            fileElementId:"inquiryFile",
+            url:"getExcelContent",
+            async:false,
+            dataType:'text',
+            success:function(data){
+                data = $.parseJSON(data.replace(/<.*?>/ig,""));
+                var result = data.result;
+                if(result == "OK"){
+                    var materials = data.materialList;
+                    $("#materialTB").html("");
+                    for(var i = 0 ; i <materials.length ; i++){
+                        var no = i + 1;
+                        $("#materialTB").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+materials[i][2]+"</td>"
+                        +"<td>"+materials[i][0]+"</td>"
+                        +"<td>"+materials[i][1]+"</td>"
+                        +"<td>"+materials[i][5]+"</td>"
+                        +"<td>"+materials[i][6]+"</td>"
+                        +"<td>"+materials[i][3]+"</td>"
+                        +"<td>"+materials[i][7]+"</td>"
+                        +"<td>"+'<input name="picName" type="hidden">'+'<a href="#" data-toggle="modal" data-target="#myModal" onclick="getProductInfo(this)">'+"添加图片"+"</a>"+"</td>"
+                            +"</tr>")
+                    }
+                    $("#allMaterial").show();
+                }else{
+                    $.message({
+                        message:result,
+                        type:'error'
+                    });
+                }
+            },
+        })
+    }
+
+    // 批量询价  添加图片 暂定只能添加一张
+    // 物料询价上传成功之后，每一行的末尾增加按钮用以显示弹框 来上传图片
+    // 图片上传成功之后将文件名称追加到每一行的<input name="picName">中
+    // 保存的时候再一起保存
+    function getProductInfo(obj) {
+        var productName = obj.parentNode.parentNode.cells[2].innerText;
+        var rowIndex = obj.parentNode.parentNode.rowIndex;
+        $("#rowNo").val(rowIndex);
+        $("#productName").val(productName);
+        var file = document.getElementById("productPic");
+        file.outerHTML = file.outerHTML;
+        $("#productImg").hide();
+        $("#productPic").show();
+    }
+    function showProductImage(obj) {
+        var productName = obj.parentNode.parentNode.cells[2].innerText;
+        var rowIndex = obj.parentNode.parentNode.rowIndex;
+        $("#rowNo").val(rowIndex);
+        $("#productName").val(productName);
+        var file = document.getElementById("productPic");
+        file.outerHTML = file.outerHTML;
+        var picName = obj.parentNode.parentNode.cells[8].childNodes[0].value;
+        $("#productImg").attr("src","productImage/"+picName);
+        $("#productImg").show();
+        $("#productPic").hide();
+    }
+
+    function uploadPic() {
+        $.ajaxFileUpload({
+            type:"post",
+            fileElementId:"productPic",
+            url:"saveProductPic",
+            async:false,
+            dataType:'text',
+            success:function(data){
+                if(data == "OK"){
+                    var rowNo = $("#rowNo").val();
+                    var name = $("#productPic").val();
+                    var picNames = name.split("\\");
+                    var le = picNames.length - 1;
+                    var targetFile = picNames[le];
+
+                    $("#productImg").attr("src","productImage/"+targetFile);
+                    $("#productImg").show();
+                    $("#productPic").hide();
+                    document.getElementById("allMaterial").rows[rowNo].cells[8].innerHTML = "";
+                    var newElement = '<input name="picName" type="hidden">'+'<a href="#" data-toggle="modal" data-target="#myModal" onclick="showProductImage(this)">'+"查看图片"+"</a>";
+                    document.getElementById("allMaterial").rows[rowNo].cells[8].innerHTML = newElement;
+                    document.getElementById("allMaterial").rows[rowNo].cells[8].childNodes[0].value = targetFile;
+                }else{
+                    $.message({
+                        message:data,
+                        type:'error'
+                    });
+                }
+            },
+            error:function(){
+                alert("设备类型文件上传出错");
+            }
+        })
+    }
+</script>
+</body>
+</html>

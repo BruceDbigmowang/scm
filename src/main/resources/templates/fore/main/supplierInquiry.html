@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>供应商报价详情</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/supplierInquiryPage::html" ></div>
+</div>
+</body>
+<script>
+    //获取URL中参数的值
+    function getQueryVariable(variable){
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    $(function () {
+        getDetail();
+    })
+
+    function getDetail() {
+        var supplierCode = getQueryVariable("supplierCode");
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"supplierCode":supplierCode , "inquiryID":inquiryID},
+            url:"getSupplierAnswer",
+            async:false,
+            success:function (data) {
+                var supplier = data.supplier;
+                var answers = data.answerList;
+                $("#supplierInfo").html("");
+                $("#supplierInfo").append("<h4>"+supplier.supplierName+"</h4>");
+                $("#allAnswer").html("");
+                for(var i = 0 ; i < answers.length ; i++){
+                    var no = i + 1;
+                    $("#allAnswer").append("<tr>"+
+                    "<td>"+no+'<input name="aId" type="hidden" value="'+answers[i].id+'">'+"</td>"+
+                    "<td>"+answers[i].productName+"</td>"+
+                    "<td>"+answers[i].specification+"</td>"+
+                    "<td>"+answers[i].quantity+"</td>"+
+                    "<td>"+answers[i].price+"</td>"+
+                    "<td>"+'<input name="agreePrice" class="form-control" value="'+answers[i].agreePrice+'" readonly>'+"</td>"+
+                    "<td>"+answers[i].cycle+"</td>"+
+                    "<td>"+'<input name="agreeCycle" class="form-control" value="'+answers[i].agreeCycle+'" readonly>'+"</td>"+
+                    "<td>"+'<input name="taxRate" style="width:90%;" class="form-control" value="'+answers[i].taxRate+'" readonly>'+"<span>%</span>"+"</td>"+
+                        "</tr>");
+                }
+            }
+        })
+    }
+
+    function canWrite() {
+        $("input[name='agreePrice']").each(function () {
+            $(this).removeAttr("readonly");
+        });
+        $("input[name='agreeCycle']").each(function () {
+            $(this).removeAttr("readonly");
+        });
+        $("input[name='taxRate']").each(function () {
+            $(this).removeAttr("readonly");
+        });
+    }
+    
+    function saveChanges() {
+        var aIds = [];
+        $("input[name='aId']").each(function () {
+            aIds.push($(this).val());
+        });
+        var agreePrices = [];
+        $("input[name='agreePrice']").each(function () {
+            agreePrices.push($(this).val());
+        });
+        var agreeCycles = [];
+        $("input[name='agreeCycle']").each(function () {
+            agreeCycles.push($(this).val());
+        });
+        var taxRates = [];
+        $("input[name='taxRate']").each(function () {
+            taxRates.push($(this).val());
+        });
+
+        var data = {"aIds":aIds , "agreePrices":agreePrices , "agreeCycles":agreeCycles , "taxRates":taxRates};
+
+        $.ajax({
+            type:"put",
+            data:data,
+            url:"updatePrice",
+            async:false,
+            traditional:true,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"已保存",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"success"
+                    })
+                }
+            }
+        })
+    }
+</script>
+</html>

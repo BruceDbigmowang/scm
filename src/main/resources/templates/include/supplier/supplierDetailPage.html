@@ -1,0 +1,402 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget">
+        <input id="importantCode" type="hidden">
+        <div class="row" style="background-color: white;">
+            <div>
+                <table border="1" cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr>
+                        <td>
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <h3>供应商详情</h3>
+                                    </td>
+                                    <td id="operateTd" style="text-align: right;vertical-align: bottom;font-size: 16px;">
+                                        <a href="#" onclick="clickWrite()">编辑</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 15px">
+                                <caption><h5>基础信息</h5></caption>
+                                <tr>
+                                    <td>供应商名称</td>
+                                    <td><input id="supplierName" class="form-control" readonly></td>
+                                    <td>供应商简称</td>
+                                    <td><input id="simpleName" class="form-control" readonly></td>
+                                    <td>供应商代码</td>
+                                    <td><input id="supplierCode" class="form-control" readonly></td>
+                                    <td>供应商性质</td>
+                                    <td><input id="supplierNature" class="form-control" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>供应类别</td>
+                                    <td><input id="supplyType" class="form-control" readonly></td>
+                                    <td>供应商关系</td>
+                                    <td><input id="relationship" class="form-control" readonly></td>
+                                    <td>所在地区</td>
+                                    <td><input id="area" class="form-control" readonly></td>
+                                    <td>公司网址</td>
+                                    <td><input id="website" class="form-control" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>通讯地址</td>
+                                    <td colspan="3"><input id="postAddress" class="form-control" readonly></td>
+                                    <td>详细地址</td>
+                                    <td colspan="3"><input id="addressDetail" class="form-control" readonly></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 15px;">
+                                <caption><p style="display: inline-block;font-size: 20px;color: black;">联系人信息</p><button style="margin-left: 78%" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加联系人</button></caption>
+                                <tbody id="contactBody" >
+                                <tr>
+                                    <td>市场/商务</td>
+                                    <td>张三丰</td>
+                                    <td>状态</td>
+                                    <td>正常</td>
+                                    <td>服务评分</td>
+                                    <td>5.0</td>
+                                    <td><button class="btn btn-sm">指定为商务对接人</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="display: none;">编号</td>
+                                    <td>技术</td>
+                                    <td>张三丰</td>
+                                    <td>状态</td>
+                                    <td>正常</td>
+                                    <td>服务评分</td>
+                                    <td>5.0</td>
+                                    <td><button class="btn btn-sm">指定为技术对接人</button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 15px;">
+                                <caption><h5>认证信息</h5></caption>
+                                <tbody id="authBody">
+                                <tr>
+                                    <td>认证状态</td>
+                                    <td>已认证</td>
+                                    <td>成立时间</td>
+                                    <td>2021/01/01</td>
+                                    <td>法人代表</td>
+                                    <td>王五</td>
+                                    <td>注册资金</td>
+                                    <td>5000万</td>
+                                    <td>统一社会信用代码</td>
+                                    <td>000000</td>
+                                    <td>注册地址</td>
+                                    <td>xxxx</td>
+                                </tr>
+                                <tr>
+                                    <td>营业执照</td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 16px;">
+                                <caption><p style="display: inline-block;font-size: 20px;color: black;">标签</p><button style="margin-left: 83%" class="btn btn-primary" data-toggle="modal" data-target="#myModal4" onclick="getSupplierForLabel()">添加标签</button></caption>                                <tbody>
+                                <tbody>
+                                    <tr>
+                                        <td id="labelTd">没有数据</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <table class="table" style="font-size: 15px;">
+                                <caption><p style="display: inline-block;font-size: 20px;color: black;">物料信息</p><button style="margin-left: 80%" class="btn btn-primary" data-toggle="modal" data-target="#myModal5" onclick="getSupplierForMaterial()">导入物料</button></caption>
+                                <thead style="font-size: 15px;">
+                                <tr>
+                                    <th>产品名称</th>
+                                    <th>型号/规格</th>
+                                    <th>供应商编码</th>
+                                    <th>K编码</th>
+                                    <th>标准单价</th>
+                                    <th>最近采购单价</th>
+                                    <th>标准交货期</th>
+                                    <th>最近采购交货期</th>
+                                </tr>
+                                </thead>
+                                <tbody id="materialBody" style="font-size: 15px;"></tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 15px;">
+                                <caption><h5>财务信息</h5></caption>
+                                <tbody>
+                                <tr>
+                                    <td>没有数据</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="table" style="font-size: 16px;">
+                                <caption><h5>其它信息</h5></caption>
+                                <tbody>
+                                <tr>
+                                    <td>没有数据</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+<!--    //************************************-->
+<!--    //**********模态框********************-->
+<!--    //************************************-->
+
+<!--    //新增联系人-->
+
+    <div class="modal fade" id="myModal"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">新增联系人</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td>联系人姓名</td>
+                            <td><input id="contactName" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>联系方式</td>
+                            <td><input id="contactWay" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>类别</td>
+                            <td>
+                                <select id="contactType" class="form-control">
+                                    <option value="0">--请选择--</option>
+                                    <option value="bussiness">市场/商务</option>
+                                    <option value="technical">技术</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="addContact()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+<!--    修改联系人信息-->
+    <div class="modal fade" id="myModal2"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改联系人信息</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="contactId" type="hidden">
+                    <table class="table">
+                        <tr>
+                            <td>联系人姓名</td>
+                            <td><input id="contactName2" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>联系方式</td>
+                            <td><input id="contactWay2" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>联系人类型</td>
+                            <td>
+                                <select id="contactType2" class="form-control">
+                                    <option value="0">--请选择--</option>
+                                    <option value="bussiness">市场/商务</option>
+                                    <option value="technical">技术</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>状态</td>
+                            <td><input id="contactStatus" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>服务评分</td>
+                            <td><input id="score" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="updateContact()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+<!--    供应商认证-->
+    <div class="modal fade" id="myModal3"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">供应商认证</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td>供应商名称</td>
+                            <td><input id="supplierName3" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>供应商编码</td>
+                            <td><input id="supplierCode3" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>成立时间</td>
+                            <td><input id="establishDate" class="form-control" style="width: 90%;"><span style="margin-left: 10px;">年</span></td>
+                        </tr>
+                        <tr>
+                            <td>法人代表</td>
+                            <td><input id="legalPerson" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>注册资金</td>
+                            <td><input id="registerMoney" class="form-control" style="width: 90%;"><span style="margin-left: 10px;">万元</span></td>
+                        </tr>
+                        <tr>
+                            <td>社会信用代码</td>
+                            <td><input id="creditCode" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>注册地址</td>
+                            <td><input id="registerAddress" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>营业执照</td>
+                            <td><input id="bussinessLicense" name="bussinessLicense" type="file" class="form-control" onchange="savePic()"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="saveAuthInfo()">提交</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+<!--    添加标签-->
+    <div class="modal fade" id="myModal4"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">添加标签</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td>供应商名称</td>
+                            <td><input id="supplierName4" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>供应商编码</td>
+                            <td><input id="supplierCode4" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>标签名称</td>
+                            <td><input id="labelName" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="saveLabel()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+<!--  导入物料信息  -->
+    <div class="modal fade" id="myModal5"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">导入物料信息</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td>供应商名称</td>
+                            <td><input id="supplierName5" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>供应商编码</td>
+                            <td><input id="supplierCode5" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>物料附件</td>
+                            <td><input id="materialExcel" name="materialExcel" type="file" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="uploadMaterial()">提交</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+<!--    //************************************-->
+<!--    //**********模态框********************-->
+<!--    //************************************-->
+
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

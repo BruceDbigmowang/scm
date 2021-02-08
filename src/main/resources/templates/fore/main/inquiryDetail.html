@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>询价详情</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/inquiryDetailPage::html" ></div>
+</div>
+<script>
+    $(function () {
+        getDetail();
+    })
+    //获取URL中参数的值
+    function getQueryVariable(variable){
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    function getDetail() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetail",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+            }
+        })
+    }
+
+    function getSupplierInquiry(supplierCode) {
+        var inquiryID = getQueryVariable("inquiryID");
+        window.location.href="foreSupplierInquiry?supplierCode="+supplierCode+"&&inquiryID="+inquiryID;
+    }
+</script>
+
+</body>
+</html>

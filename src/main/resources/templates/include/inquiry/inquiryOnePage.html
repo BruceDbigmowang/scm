@@ -1,0 +1,105 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget" style="height: 665px;">
+
+        <div class="flow" style="background-color: white;">
+
+            <div style="border:1px solid #000;width: 100%;height:600px;">
+                <div style="width: 100%;">
+                    <span><h4>发起询价</h4></span><span style="margin-left: 95%;"><a href="#">草稿箱</a></span>
+                </div>
+                <div style="width: 67%;float: left;border:1px solid #000;margin-left: 10px;height: 430px;">
+                    <table class="table">
+                        <tr>
+                            <td>项目</td>
+                            <td><input id="project" class="form-control"></td>
+                            <td>选择类型<span style="color: red;">*</span></td>
+                            <td>
+                                <select id="type" class="form-control">
+                                    <option value="">请选择</option>
+                                    <option value="刀具">刀具</option>
+                                    <option value="MRO">MRO</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>产品名称<span style="color: red;">*</span></td>
+                            <td><input id="productName" class="form-control" onblur="showAllSpecification()"></td>
+                            <td>规格型号<span style="color: red;">*</span></td>
+                            <td><input id="specification" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>品牌</td>
+                            <td><input id="brand" class="form-control"></td>
+                            <td>品牌编码</td>
+                            <td><input id="brandCode" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>需求数量<span style="color: red;">*</span></td>
+                            <td><input id="quantity" class="form-control"></td>
+                            <td>数量单位<span style="color: red;">*</span></td>
+                            <td><input id="unit" class="form-control"></td>
+                        </tr>
+                        <tr style="height: 60px;">
+                            <td>截止日期<span style="color: red;">*</span></td>
+                            <td><input id="deadline" class="form-control"></td>
+                            <td>备注</td>
+                            <td><textarea id="note" class="form-control"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>上传图片</td>
+                            <td colspan="3"><input id="productPic" name="productPic" type="file" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="width:30%;float: left;border:1px solid #000;margin-left: 10px;height: 430px;font-size: 15px;">
+                    选择供应商：<span style="margin-left: 50%;"><input id="checkAll" name="suppliers" type="checkbox" style="vertical-align: middle;margin-top: -3px;" onclick="setAllNo()"><strong>全选</strong></span>
+                    <div id="allSupplier" style="margin-left: 20px;margin-top: 20px;"></div>
+                </div>
+                <div style="width: 100%;text-align: center">
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="saveInquiryOne()">发起询价</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+<!--    根据产品名称 查询出所有的规格型号-->
+    <div class="modal fade" id="myModal"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">选择规格型号</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>规格/型号</th>
+                            <th style="width: 20%;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="allSpecification"></tbody>
+                    </table>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

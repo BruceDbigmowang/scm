@@ -1,0 +1,38 @@
+<div id="top" class="clearfix" th:fragment="html">
+
+    <!-- Start App Logo -->
+    <div class="applogo">
+        <a class="logo">
+            <img src="image/logo1.png" height="40" width="65" style="margin-top: -5px;margin-left: -30px;"><span style="font-size: 12px;color: rgba(255,161,27,0.8)">|诺而为SCM管理系统</span>
+        </a>
+
+    </div>
+    <!-- End App Logo -->
+
+    <!-- Start Sidebar Show Hide Button -->
+    <a href="#" class="sidebar-open-button"><i class="fa fa-bars" style="color: rgba(255,161,27,0.8)"></i></a>
+    <a href="#" class="sidebar-open-button-mobile"><i class="fa fa-bars"></i></a>
+    <!-- End Sidebar Show Hide Button -->
+
+    <!-- Start Searchbox -->
+    <!--    <form class="searchform">-->
+    <!--        <input type="text" class="searchbox" id="searchbox" placeholder="Search">-->
+    <!--        <span class="searchbutton"><i class="fa fa-search"></i></span>-->
+    <!--    </form>-->
+
+    <ul class="top-right">
+
+
+
+        <li class="dropdown link">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle profilebox"><img id="headPic" src="image/defaultUser.jpg"><b style="color: white" th:text="${session.user.name}"></b><span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-list dropdown-menu-right">
+                <li><a href="foreUserCenter"><i class="fa falist fa-wrench"></i>个人中心</a></li>
+                <li><a th:href="@{logout}"><i class="fa falist fa-power-off"></i> 退出登录</a></li>
+            </ul>
+        </li>
+
+    </ul>
+    <!-- End Top Right -->
+
+</div>

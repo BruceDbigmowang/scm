@@ -1,0 +1,81 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget" style="height: 665px;">
+
+        <div class="flow" style="background-color: white">
+            <table class="table">
+                <tr>
+                    <td style="width: 80px;">询价日期</td>
+                    <td>
+                        <input id="begin" style="width: 40%;" class="form-control">—<input id="end" style="width: 40%;" class="form-control">
+                    </td>
+                    <td style="width: 60px;">项目</td>
+                    <td>
+                        <input id="project" class="form-control">
+                    </td>
+                    <td style="width: 81px;">询价类型</td>
+                    <td>
+                        <select id="inquiryType" class="form-control" style="width: 150px;">
+                            <option value="">全部</option>
+                            <option value="刀具">刀具</option>
+                            <option value="MRO">MRO</option>
+                        </select>
+                    </td>
+                    <td style="width: 81px;">询价状态</td>
+                    <td>
+                        <select id="inquiryStatus" class="form-control" style="width: 150px;">
+                            <option value="">全部</option>
+                            <option value="有效">有效</option>
+                            <option value="无效">无效</option>
+                            <option value="过期">过期</option>
+                        </select>
+                    </td>
+
+                </tr>
+            </table>
+            <div style="text-align: right;">
+                <button class="btn btn-primary">重置</button>
+                <button class="btn btn-primary" style="margin-left: 10px;" onclick="getInquiryByCondition()">搜索</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <table class="table table-striped table-bordered table-hover  table-condensed" style="font-size: 15px;">
+                    <thead>
+                    <tr>
+                        <th>询价单号</th>
+                        <th>询价日期</th>
+                        <th>项目</th>
+                        <th>询价类型</th>
+                        <th>截止日期</th>
+                        <th>询价状态</th>
+                        <th>询价人</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="inquiryTotal"></tbody>
+                </table>
+            </div>
+            <div id="pageLabel" style="text-align: center">
+                <a href="#">首页</a>&nbsp&nbsp&nbsp&nbsp
+                <a href="#">上一页</a>&nbsp&nbsp&nbsp&nbsp
+                <a href="#">下一页</a>&nbsp&nbsp&nbsp&nbsp
+                <a href="#">尾页</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>供应商查询</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/supplier/supplierPage::html" ></div>
+</div>
+
+<script>
+
+    var start = 0;
+    var pages = 0;
+
+    $(function () {
+        loadAllSupplier();
+    });
+
+    function loadAllSupplier() {
+        start = 0;
+        $.ajax({
+            data:{"start":start},
+            type:"post",
+            url:"findAllSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                var suppliers = data.suppliers;
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    $("#allSupplier").append("<tr>"
+                    +"<td>"+'<input type="checkbox">'+"</td>"
+                    +"<td>"+suppliers[i].supplierName+"</td>"
+                    +"<td>"+suppliers[i].simpleName+"</td>"
+                    +"<td>"+suppliers[i].supplierCode+"</td>"
+                    +"<td>"+suppliers[i].supplierNature+"</td>"
+                    +"<td>"+suppliers[i].supplyType+"</td>"
+                    +"<td>"+suppliers[i].contact+"</td>"
+                    +"<td>"+suppliers[i].phone+"</td>"
+                    +"<td>"+suppliers[i].auth+"</td>"
+                    +"<td>"+suppliers[i].risk+"</td>"
+                    +"<td>"+suppliers[i].label+"</td>"
+                    +"<td>"+suppliers[i].forbidden+"</td>"
+                    +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                        +"</tr>");
+                }
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="loadAllSupplier()">首页</a>'+
+                '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierPrevious()">上一页</a>'+
+                '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierNext()">下一页</a>'+
+                '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function loadAllSupplierNext() {
+        if(start == pages -1){
+            $.message({
+                message:"目前已是最后一页",
+                type:"warning"
+            })
+        }else{
+            start = start + 1;
+            $.ajax({
+                data:{"start":start},
+                type:"post",
+                url:"findAllSupplier",
+                async:false,
+                success:function (data) {
+                    $("#allSupplier").html("");
+                    var suppliers = data.suppliers;
+                    for(var i = 0 ; i < suppliers.length ; i++){
+                        $("#allSupplier").append("<tr>"
+                            +"<td>"+'<input type="checkbox">'+"</td>"
+                            +"<td>"+suppliers[i].supplierName+"</td>"
+                            +"<td>"+suppliers[i].simpleName+"</td>"
+                            +"<td>"+suppliers[i].supplierCode+"</td>"
+                            +"<td>"+suppliers[i].supplierNature+"</td>"
+                            +"<td>"+suppliers[i].supplyType+"</td>"
+                            +"<td>"+suppliers[i].contact+"</td>"
+                            +"<td>"+suppliers[i].phone+"</td>"
+                            +"<td>"+suppliers[i].auth+"</td>"
+                            +"<td>"+suppliers[i].risk+"</td>"
+                            +"<td>"+suppliers[i].label+"</td>"
+                            +"<td>"+suppliers[i].forbidden+"</td>"
+                            +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="loadAllSupplier()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function loadAllSupplierPrevious() {
+        if(start == 0){
+            $.message({
+                message:"目前已是第一页",
+                type:"warning"
+            })
+        }else{
+            start = start - 1;
+            $.ajax({
+                data:{"start":start},
+                type:"post",
+                url:"findAllSupplier",
+                async:false,
+                success:function (data) {
+                    $("#allSupplier").html("");
+                    var suppliers = data.suppliers;
+                    for(var i = 0 ; i < suppliers.length ; i++){
+                        $("#allSupplier").append("<tr>"
+                            +"<td>"+'<input type="checkbox">'+"</td>"
+                            +"<td>"+suppliers[i].supplierName+"</td>"
+                            +"<td>"+suppliers[i].simpleName+"</td>"
+                            +"<td>"+suppliers[i].supplierCode+"</td>"
+                            +"<td>"+suppliers[i].supplierNature+"</td>"
+                            +"<td>"+suppliers[i].supplyType+"</td>"
+                            +"<td>"+suppliers[i].contact+"</td>"
+                            +"<td>"+suppliers[i].phone+"</td>"
+                            +"<td>"+suppliers[i].auth+"</td>"
+                            +"<td>"+suppliers[i].risk+"</td>"
+                            +"<td>"+suppliers[i].label+"</td>"
+                            +"<td>"+suppliers[i].forbidden+"</td>"
+                            +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="loadAllSupplier()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function loadAllSupplierLast() {
+        start = pages - 1;
+        $.ajax({
+            data:{"start":start},
+            type:"post",
+            url:"findAllSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                var suppliers = data.suppliers;
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    $("#allSupplier").append("<tr>"
+                        +"<td>"+'<input type="checkbox">'+"</td>"
+                        +"<td>"+suppliers[i].supplierName+"</td>"
+                        +"<td>"+suppliers[i].simpleName+"</td>"
+                        +"<td>"+suppliers[i].supplierCode+"</td>"
+                        +"<td>"+suppliers[i].supplierNature+"</td>"
+                        +"<td>"+suppliers[i].supplyType+"</td>"
+                        +"<td>"+suppliers[i].contact+"</td>"
+                        +"<td>"+suppliers[i].phone+"</td>"
+                        +"<td>"+suppliers[i].auth+"</td>"
+                        +"<td>"+suppliers[i].risk+"</td>"
+                        +"<td>"+suppliers[i].label+"</td>"
+                        +"<td>"+suppliers[i].forbidden+"</td>"
+                        +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                        +"</tr>");
+                }
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="loadAllSupplier()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadAllSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function loadSomeSupplier() {
+        var name = $("#name").val();
+        var nature = $("#nature").val();
+        var type = $("#type").val();
+        var auth = $("#auth option:selected").val();
+        var forbidden = $("#forb option:selected").val();
+        start = 0;
+
+        var data = {"name":name , "nature":nature , "type":type , "auth":auth , "forbidden":forbidden , "start":start};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"findSomeSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                var suppliers = data.suppliers;
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    $("#allSupplier").append("<tr>"
+                        +"<td>"+'<input type="checkbox">'+"</td>"
+                        +"<td>"+suppliers[i].supplierName+"</td>"
+                        +"<td>"+suppliers[i].simpleName+"</td>"
+                        +"<td>"+suppliers[i].supplierCode+"</td>"
+                        +"<td>"+suppliers[i].supplierNature+"</td>"
+                        +"<td>"+suppliers[i].supplyType+"</td>"
+                        +"<td>"+suppliers[i].contact+"</td>"
+                        +"<td>"+suppliers[i].phone+"</td>"
+                        +"<td>"+suppliers[i].auth+"</td>"
+                        +"<td>"+suppliers[i].risk+"</td>"
+                        +"<td>"+suppliers[i].label+"</td>"
+                        +"<td>"+suppliers[i].forbidden+"</td>"
+                        +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                        +"</tr>");
+                }
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="loadSomeSupplier()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function loadSomeSupplierPrevious() {
+        var name = $("#name").val();
+        var nature = $("#nature").val();
+        var type = $("#type").val();
+        var auth = $("#auth option:selected").val();
+        var forbidden = $("#forb option:selected").val();
+        if(start == 0){
+            $.message({
+                message:"目前已是第一页",
+                type:"warning"
+            })
+        }else{
+            start = start - 1;
+            var data = {"name":name , "nature":nature , "type":type , "auth":auth , "forbidden":forbidden , "start":start};
+            $.ajax({
+                type:"post",
+                data:data,
+                url:"findSomeSupplier",
+                async:false,
+                success:function (data) {
+                    $("#allSupplier").html("");
+                    var suppliers = data.suppliers;
+                    for(var i = 0 ; i < suppliers.length ; i++){
+                        $("#allSupplier").append("<tr>"
+                            +"<td>"+'<input type="checkbox">'+"</td>"
+                            +"<td>"+suppliers[i].supplierName+"</td>"
+                            +"<td>"+suppliers[i].simpleName+"</td>"
+                            +"<td>"+suppliers[i].supplierCode+"</td>"
+                            +"<td>"+suppliers[i].supplierNature+"</td>"
+                            +"<td>"+suppliers[i].supplyType+"</td>"
+                            +"<td>"+suppliers[i].contact+"</td>"
+                            +"<td>"+suppliers[i].phone+"</td>"
+                            +"<td>"+suppliers[i].auth+"</td>"
+                            +"<td>"+suppliers[i].risk+"</td>"
+                            +"<td>"+suppliers[i].label+"</td>"
+                            +"<td>"+suppliers[i].forbidden+"</td>"
+                            +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="loadSomeSupplier()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function loadSomeSupplierNext() {
+        var name = $("#name").val();
+        var nature = $("#nature").val();
+        var type = $("#type").val();
+        var auth = $("#auth option:selected").val();
+        var forbidden = $("#forb option:selected").val();
+        if(start == pages - 1){
+            $.message({
+                message:"目前已是最后一页",
+                type:"warning"
+            })
+        }else{
+            start = start + 1;
+            var data = {"name":name , "nature":nature , "type":type , "auth":auth , "forbidden":forbidden , "start":start};
+            $.ajax({
+                type:"post",
+                data:data,
+                url:"findSomeSupplier",
+                async:false,
+                success:function (data) {
+                    $("#allSupplier").html("");
+                    var suppliers = data.suppliers;
+                    for(var i = 0 ; i < suppliers.length ; i++){
+                        $("#allSupplier").append("<tr>"
+                            +"<td>"+'<input type="checkbox">'+"</td>"
+                            +"<td>"+suppliers[i].supplierName+"</td>"
+                            +"<td>"+suppliers[i].simpleName+"</td>"
+                            +"<td>"+suppliers[i].supplierCode+"</td>"
+                            +"<td>"+suppliers[i].supplierNature+"</td>"
+                            +"<td>"+suppliers[i].supplyType+"</td>"
+                            +"<td>"+suppliers[i].contact+"</td>"
+                            +"<td>"+suppliers[i].phone+"</td>"
+                            +"<td>"+suppliers[i].auth+"</td>"
+                            +"<td>"+suppliers[i].risk+"</td>"
+                            +"<td>"+suppliers[i].label+"</td>"
+                            +"<td>"+suppliers[i].forbidden+"</td>"
+                            +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+                    pages = data.pages;
+                    var target = 0;
+                    if(pages != 0){
+                        target = start + 1
+                    }
+                    $("#pageLabel").html("");
+                    $("#pageLabel").append('<a href="#" onclick="loadSomeSupplier()">首页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierPrevious()">上一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierNext()">下一页</a>'+
+                        '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                    );
+                }
+            })
+        }
+    }
+
+    function loadSomeSupplierLast() {
+        var name = $("#name").val();
+        var nature = $("#nature").val();
+        var type = $("#type").val();
+        var auth = $("#auth option:selected").val();
+        var forbidden = $("#forb option:selected").val();
+        start = pages - 1;
+
+        var data = {"name":name , "nature":nature , "type":type , "auth":auth , "forbidden":forbidden , "start":start};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"findSomeSupplier",
+            async:false,
+            success:function (data) {
+                $("#allSupplier").html("");
+                var suppliers = data.suppliers;
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    $("#allSupplier").append("<tr>"
+                        +"<td>"+'<input type="checkbox">'+"</td>"
+                        +"<td>"+suppliers[i].supplierName+"</td>"
+                        +"<td>"+suppliers[i].simpleName+"</td>"
+                        +"<td>"+suppliers[i].supplierCode+"</td>"
+                        +"<td>"+suppliers[i].supplierNature+"</td>"
+                        +"<td>"+suppliers[i].supplyType+"</td>"
+                        +"<td>"+suppliers[i].contact+"</td>"
+                        +"<td>"+suppliers[i].phone+"</td>"
+                        +"<td>"+suppliers[i].auth+"</td>"
+                        +"<td>"+suppliers[i].risk+"</td>"
+                        +"<td>"+suppliers[i].label+"</td>"
+                        +"<td>"+suppliers[i].forbidden+"</td>"
+                        +"<td>"+'<a href="#" onclick="getDetail(this)">查看详情</a>'+"</td>"
+                        +"</tr>");
+                }
+                pages = data.pages;
+                var target = 0;
+                if(pages != 0){
+                    target = start + 1
+                }
+                $("#pageLabel").html("");
+                $("#pageLabel").append('<a href="#" onclick="loadSomeSupplier()">首页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierPrevious()">上一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierNext()">下一页</a>'+
+                    '<a href="#" style="margin-left: 10px;" onclick="loadSomeSupplierLast()">尾页</a>' +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "第" + target+"页/共"+pages+"页"
+                );
+            }
+        })
+    }
+
+    function saveSupplier() {
+        var supplierName = $("#supplierName").val();
+        var simpleName = $("#simpleName").val();
+        var supplierNature = $("#supplierNature").val();
+        var supplyType = $("#supplyType").val();
+        var relationship = $("#relationship").val();
+        var area = $("#area option:selected").val();
+        var postAddress = $("#postAddress").val();
+        var addressDetail = $("#addressDetail").val();
+
+        var data = {"supplierName":supplierName , "simpleName":simpleName , "supplierNature":supplierNature , "supplyType":supplyType , "relationship":relationship , "area":area , "postAddress":postAddress , "addressDetail":addressDetail};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"createSupplier",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"供应商创建成功",
+                        type:"success"
+                    });
+                    loadAllSupplier();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    function getDetail(obj) {
+        var supplierCode = obj.parentNode.parentNode.cells[3].innerText;
+        window.location.href="forSupplierDetail?supplierCode="+supplierCode;
+    }
+
+    //上传物料信息
+    function uploadSupplier() {
+        $.ajaxFileUpload({
+            type:"post",
+            fileElementId:"supplierExcel",
+            url:"uploadSupplierInfo",
+            async:false,
+            dataType:'text',
+            success:function(data){
+                if(data.includes("成功")){
+                    $.message({
+                        message:data,
+                        type:'success'
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:'error'
+                    });
+                }
+            },
+            error:function(){
+                alert("设备类型文件上传出错");
+            }
+        })
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>诺而为SCM登录页面</title>
+</head>
+<body >
+<div th:fragment="html">
+
+    <!-- 登录框-->
+    <div id="loginFrameArea" style="position: absolute;top: 115px;left: 25%;">
+        <div class="simpleLogo1" style="display: inline-block">
+                <img src="./image/logo.png" style="width:180px;height:120px;">
+        </div>
+        <div id="loginFrameDiv" class="loginFrameDiv" style="width: 300px;">
+            <div class="loginErrorMessageDiv">
+                <div class="alert alert-danger" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                    <span class="errorMessage" ></span>
+                </div>
+            </div>
+
+            <div class="loginInput " style="margin-bottom: 20px;height: 40px;background-color: #edeef4">
+					<span class="loginInputIcon " style="width: 25px;height: 25px;">
+						<span class=" glyphicon glyphicon-user" style="font-size: 16px;color:#cbcccd;left: 5px;top: 5px;"></span>
+					</span>
+                <input v-model="userData.name" placeholder="请输入账号|手机号" type="text" style="width: 268px;height: 35px;left: 3px;top: 1px;
+                        background-color: #ebeef4">
+            </div>
+
+            <div class="loginInput " style="margin-bottom: 20px;height: 40px;background-color: #edeef4">
+					<span class="loginInputIcon " style="width: 25px;height: 25px;">
+						<span class=" glyphicon glyphicon-lock" style="font-size: 16px;color:#cbcccd;left: 5px;top: 5px;"></span>
+					</span>
+                <input v-model="userData.password" type="password" placeholder="请输入密码" style="width: 268px;height: 35px;left: 3px;top: 1px;
+                        background-color: #ebeef4">
+            </div>
+
+            <div class="loginInput " style="height: 40px;background-color: #edeef4">
+                    <span class="loginInputIcon " style="width: 25px;height: 25px;">
+						<span class=" glyphicon glyphicon-check" style="font-size: 16px;color:#cbcccd;left: 5px;top: 5px;"></span>
+					</span>
+                <input v-model="userData.validateCode" type="text" placeholder="请输入验证码" style="width: 50%;height: 35px;left: 3px;top: 1px;
+                        background-color: #ebeef4" title="验证码不区分大小写" maxlength="4">
+                <img id="vpic" onclick="this.src='captcha?r'+Date.now()" src="captcha" alt="验证码" style="width: 118px;height: 40px;border-radius: 3px;"/>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button class="btn btn-primary" type="button" @click="login" style="background-color: rgba(255,161,27,0.8);outline-color: rgba(255,161,27,0.8);width: 100%;color:white;border:0px;"><strong>登&nbsp;&nbsp&nbsp;&nbsp录</strong></button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+
+        var left = window.innerWidth/2+162;
+        $("div.loginFrameDiv").css("left",left);
+    });
+
+    //对所有的input 绑定回车触发的事件
+    $(function(){
+        $('input').bind('keyup', function(event) {
+            if (event.keyCode == "13") {
+                //回车执行查询
+                login();
+            }
+        });
+    });
+
+    var loginData = {
+        loginUri:'logins',
+        result: [],
+        userData:{name:'', password:'',validateCode:''},
+        pictureUrl:''
+    };
+    //ViewModel
+    var vue = new Vue({
+        el: '#loginFrameArea',
+        data: loginData,
+        mounted:function(){//代表加载成功
+            window.login = this.login;
+        },
+        methods: {
+            login:function(){
+                if(0==this.userData.name.length){
+                    $("span.errorMessage").html("请输入用户名");
+                    $("div.loginErrorMessageDiv").css("visibility","visible");
+                    var obj = document.getElementById("vpic");
+                    obj.src='captcha?r'+Date.now();
+                    return;
+                }
+                if(0==this.userData.password.length){
+                    $("span.errorMessage").html("请输入密码");
+                    $("div.loginErrorMessageDiv").css("visibility","visible");
+                    var obj = document.getElementById("vpic");
+                    obj.src='captcha?r'+Date.now();
+                    return;
+                }
+                var url = this.loginUri;
+                <!-- 登录请求将移步至滑块验证鼠标松开事件处-->
+                axios.post(url,this.userData).then(function(response) {
+                    var result = response.data;
+                    if(result.code==0){
+                        location.href="foreIndex";
+                    }
+                    else{
+                        $("span.errorMessage").html(result.message);
+                        $("div.loginErrorMessageDiv").css("visibility","visible");
+                        var obj = document.getElementById("vpic");
+                        obj.src='captcha?r'+Date.now();
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

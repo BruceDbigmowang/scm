@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>供应商详情</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/supplier/supplierDetailPage::html" ></div>
+</div>
+<script>
+
+    //年选择器
+    laydate.render({
+        elem: '#establishDate'
+        ,type: 'year'
+    });
+
+    $(function () {
+        var supplierCode = getQueryVariable("supplierCode");
+        $("#importantCode").val(supplierCode);
+        getDetail();
+
+    })
+
+    //获取URL中参数的值
+    function getQueryVariable(variable){
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    function getDetail() {
+        var supplierCode = getQueryVariable("supplierCode");
+        $.ajax({
+            type:"post",
+            data:{"supplierCode":supplierCode},
+            url:"findSupplierDetail",
+            async:false,
+            success:function (data) {
+                var supplier = data.supplier;
+                //加载供应商基础信息
+                $("#supplierName").val(supplier.supplierName);
+                $("#simpleName").val(supplier.simpleName);
+                $("#supplierCode").val(supplier.supplierCode);
+                $("#supplierNature").val(supplier.supplierNature);
+                $("#supplyType").val(supplier.supplyType);
+                $("#relationship").val(supplier.relationship);
+                $("#area").val(supplier.area);
+                $("#website").val(supplier.website);
+                $("#postAddress").val(supplier.contactAddress);
+                $("#addressDetail").val(supplier.addressDetail);
+
+                var contactInfo = data.contactInfo;
+                $("#contactBody").html("");
+                if(contactInfo == "no"){
+                    $("#contactBody").append("<tr>"
+                        +'<td colspan="7">'+"暂无数据"+"</td>"
+                        +"</tr>")
+                }else{
+                    var contacts = data.contacts;
+                    for(var i = 0 ; i < contacts.length ; i++){
+                        if(contacts[i].type == "bussiness"){
+                            if(contacts[i].mainContact == "T"){
+                                $("#contactBody").append("<tr>"+"<td style='display: none;'>"+contacts[i].id+"</td>"+"<td style='width: 100px;'>市场/商务</td>\n" +
+                                    "                                    <td>"+contacts[i].contactName+"</td>\n" +
+                                        "<td style='width: 100px;'>联系方式</td>"+
+                                        "<td>"+contacts[i].contactWay+"</td>"+
+                                    "                                    <td style='width: 60px;'>状态</td>\n" +
+                                    "                                    <td>"+contacts[i].status+"</td>\n" +
+                                    "                                    <td style='width: 100px;'>服务评分</td>\n" +
+                                    "                                    <td>"+contacts[i].grade+"</td>\n" +"<td>"+'<a href="#" data-toggle="modal" data-target="#myModal2" onclick="getContactId(this)">'+"修改"+"</a>"+"</td>"+
+                                    "                                    <td></td>"+"</tr>");
+                            }else{
+                                $("#contactBody").append("<tr>"+"<td style='display: none;'>"+contacts[i].id+"</td>"+"<td style='width: 100px;'>市场/商务</td>\n" +
+                                    "                                    <td>"+contacts[i].contactName+"</td>\n" +
+                                    "<td style='width: 100px;'>联系方式</td>"+
+                                    "<td>"+contacts[i].contactWay+"</td>"+
+                                    "                                    <td style='width: 60px;'>状态</td>\n" +
+                                    "                                    <td>"+contacts[i].status+"</td>\n" +
+                                    "                                    <td style='width: 100px;'>服务评分</td>\n" +
+                                    "                                    <td>"+contacts[i].grade+"</td>\n"+"<td>" +'<a href="#" data-toggle="modal" data-target="#myModal2" onclick="getContactId(this)">'+"修改"+"</a>"+"</td>"+
+                                    "                                    <td><button class=\"btn btn-sm\" onclick='addPrincipal(this)'>指定为商务对接人</button></td>"+"</tr>");
+                            }
+                        }else{
+                            if(contacts[i].mainContact == "T"){
+                                $("#contactBody").append("<tr>"+"<td style='display: none;'>"+contacts[i].id+"</td>"+"<td style='width: 100px'>技术支持</td>\n" +
+                                    "                                    <td>"+contacts[i].contactName+"</td>\n" +
+                                    "<td style='width: 100px;'>联系方式</td>"+
+                                    "<td>"+contacts[i].contactWay+"</td>"+
+                                    "                                    <td style='width: 60px'>状态</td>\n" +
+                                    "                                    <td>"+contacts[i].status+"</td>\n" +
+                                    "                                    <td style='width: 100px;'>服务评分</td>\n" +
+                                    "                                    <td>"+contacts[i].grade+"</td>\n"+"<td>" +'<a href="#" data-toggle="modal" data-target="#myModal2" onclick="getContactId(this)">'+"修改"+"</a>"+"</td>"+
+                                    "                                    <td></td>"+"</tr>");
+                            }else{
+                                $("#contactBody").append("<tr>"+"<td style='display: none;'>"+contacts[i].id+"</td>"+"<td style='width: 100px;'>技术支持</td>\n" +
+                                    "                                    <td>"+contacts[i].contactName+"</td>\n" +
+                                    "<td style='width: 100px;'>联系方式</td>"+
+                                    "<td>"+contacts[i].contactWay+"</td>"+
+                                    "                                    <td style='width: 60px;'>状态</td>\n" +
+                                    "                                    <td>"+contacts[i].status+"</td>\n" +
+                                    "                                    <td style='width: 100px;'>服务评分</td>\n" +
+                                    "                                    <td>"+contacts[i].grade+"</td>\n" +"<td>"+'<a href="#" data-toggle="modal" data-target="#myModal2" onclick="getContactId(this)">'+"修改"+"</a>"+"</td>"+
+                                    "                                    <td><button class=\"btn btn-sm\" onclick='addPrincipal(this)'>指定为技术对接人</button></td>"+"</tr>");
+                            }
+                        }
+                    }
+                }
+
+                var authInfo = data.authenInfo;
+                $("#authBody").html("");
+                if(authInfo == "no"){
+                    $("#authBody").append("<tr>"+"<td>"+"认证状态：未认证" +"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+"<a href='#' data-toggle=\"modal\" data-target=\"#myModal3\" onclick='getSupplierInfo()'>去认证</a>"+"</td>"+"</tr>");
+                }else{
+                    var auth = data.authentications[0];
+                    $("#authBody").append("<tr>\n" +
+                        "                                    <td>认证状态</td>\n" +
+                        "                                    <td>已认证</td>\n" +
+                        "                                    <td>成立时间</td>\n" +
+                        "                                    <td>"+auth.establishDate+"年</td>\n" +
+                        "                                    <td>法人代表</td>\n" +
+                        "                                    <td>"+auth.legalPerson+"</td>\n" +
+                        "                                    <td>注册资金</td>\n" +
+                        "                                    <td>"+auth.registerMoney+"万元</td>\n" +
+                        "                                    <td>统一社会信用代码</td>\n" +
+                        "                                    <td>"+auth.creditCode+"</td>\n" +
+                        "                                    <td>注册地址</td>\n" +
+                        "                                    <td>"+auth.registerAddress+"</td>\n" +
+                        "                                </tr>\n" +
+                        "                                <tr>\n" +
+                        "                                    <td>营业执照</td>\n" +
+                        "                                    <td colspan='11' style='text-align: center;'>"+'<img style="width:640px;height:800px;" src="license/'+auth.picName+'">'+"</td>\n" +
+                        "                                </tr>");
+                }
+
+                var labelInfo = data.labelInfo;
+                $("#labelTd").html("");
+                if(labelInfo == "no"){
+                    $("#labelTd").append("暂无数据");
+                }else{
+                    var labels = data.labels;
+                    for(var i = 0 ; i < labels.length ; i++){
+                        $("#labelTd").append('<span class="label label-info" ondblclick="getLabelVal(this)" style="margin-left:10px">'+labels[i].labelName+"</span>");
+                    }
+                }
+                var materialInfo = data.materialInfo;
+                $("#materialBody").html("");
+                if(materialInfo == "no"){
+
+                }else{
+                    var materials = data.materials;
+                    for(var i = 0 ; i < materials.length ; i++){
+                        $("#materialBody").append("<tr>"
+                            +"<td>"+materials[i].materialName+"</td>"
+                        +"<td>"+materials[i].specification+"</td>"
+                        +"<td>"+materials[i].supplierCode+"</td>"
+                        +"<td>"+materials[i].kcode+"</td>"
+                        +"<td>"+materials[i].standardPrice+"元/件"+"</td>"
+                        +"<td>"+materials[i].recentPrice+"元/件"+"</td>"
+                        +"<td>"+materials[i].standardDeadline+"天"+"</td>"
+                        +"<td>"+materials[i].recentDeadline+"天"+"</td>"
+                            +"</tr>");
+                    }
+                }
+            }
+        })
+    }
+
+    //添加联系人
+    function addContact() {
+        var supplierCode = $("#importantCode").val();
+        var contactName = $("#contactName").val();
+        var contactWay = $("#contactWay").val();
+        var contactType = $("#contactType").val();
+
+        if(contactName == ""){
+            $.message({
+                message:"请填写联系人姓名",
+                type:"error"
+            });
+            return false;
+        }
+        if(contactWay == ""){
+            $.message({
+                message:"请填写联系方式",
+                type:"error"
+            });
+            return false;
+        }
+        if(contactType == "0"){
+            $.message({
+                message:"请选择联系人类型",
+                type:"error"
+            });
+            return false;
+        }
+
+        var data = {"supplierCode":supplierCode , "contactName":contactName , "contactWay":contactWay , "contactType":contactType};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"createContact",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"联系人添加成功",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    //设置为对接人
+    function addPrincipal(obj) {
+        var contactId = obj.parentNode.parentNode.cells[0].innerText;
+        $.ajax({
+            type:"put",
+            data:{"contactId":contactId},
+            url:"setPrincipal",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"该联系人已设置为对接人",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    //获取联系人编号 传入到<input type="hidden">中
+    function getContactId(obj) {
+        var contactId = obj.parentNode.parentNode.cells[0].innerText;
+        $("#contactId").val(contactId);
+
+        //根绝contactId获取联系人的详细信息
+        $.ajax({
+            type:"post",
+            data:{"contactId":contactId},
+            url:"getContactDetail",
+            async:false,
+            success:function (data) {
+                $("#contactName2").val(data.contactName);
+                $("#contactWay2").val(data.contactWay);
+                $("#score").val(data.grade);
+                $("#contactStatus").val(data.status);
+                var all_options = document.getElementById("contactType2").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == data.type){  // 根据option标签的value来进行判断  测试的代码这里是两个等号
+                        all_options[i].selected = true;
+                    }
+                }
+            }
+        })
+    }
+
+    //更新联系人信息
+    function updateContact() {
+        var contactId = $("#contactId").val();
+        var contactName = $("#contactName2").val();
+        var contactWay = $("#contactWay2").val();
+        var contactType = $("#contactType2 option:selected").val();
+        var contactStatus = $("#contactStatus").val();
+        var score = $("#score").val();
+
+        if(contactName == ""){
+            $.message({
+                message:"请填写联系人姓名",
+                type:"error"
+            });
+            return false;
+        }
+        if(contactWay == ""){
+            $.message({
+                message:"请填写联系方式",
+                type:"error"
+            });
+            return false;
+        }
+        if(contactType == "0"){
+            $.message({
+                message:"请选择联系人类型",
+                type:"error"
+            });
+            return false;
+        }
+        if(contactStatus == ""){
+            $.message({
+                message:"请填写联系人状态",
+                type:"error"
+            });
+            return false;
+        }
+        if(score == ""){
+            score = 0;
+        }
+
+        var data={"contactId":contactId , "contactName":contactName , "contactWay":contactWay , "contactType":contactType , "contactStatus":contactStatus , "score":score};
+        $.ajax({
+            type:"put",
+            data:data,
+            url:"changeContact",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"该联系人信息已修改",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    //获取供应商名称 供应商代码
+    function getSupplierInfo() {
+        var supplierCode = $("#importantCode").val();
+        $("#supplierCode3").val(supplierCode);
+        var supplierName = $("#supplierName").val();
+        $("#supplierName3").val(supplierName);
+    }
+    
+    //上传图片
+    function savePic() {
+        var supplierCode = $("#supplierCode3").val();
+        $.ajaxFileUpload({
+            type:"post",
+            data:{"supplierCode":supplierCode},
+            fileElementId:"bussinessLicense",
+            url:"saveLicense",
+            async:false,
+            dataType:'text',
+            success:function(data){
+                if(data == "文件上传成功"){
+
+                }else{
+                    $.message({
+                        message:data,
+                        type:'error'
+                    });
+                }
+            },
+            error:function(){
+                alert("设备类型文件上传出错");
+            }
+        })
+    }
+
+    //保存认证的相关信息
+    function saveAuthInfo() {
+        var supplierCode = $("#supplierCode3").val();
+        var establishDate = $("#establishDate").val();
+        var legalPerson = $("#legalPerson").val();
+        var registerMoney = $("#registerMoney").val();
+        var creditCode = $("#creditCode").val();
+        var registerAddress = $("#registerAddress").val();
+        var name = $("#bussinessLicense").val();
+        var picNames = name.split("\\");
+        var le = picNames.length - 1;
+        var targetFile = picNames[le];
+        
+        var data = {"supplierCode":supplierCode , "establishDate":establishDate , "legalPerson":legalPerson , "registerMoney":registerMoney , "creditCode":creditCode , "registerAddress":registerAddress , "picName":targetFile};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"saveAuthenInfo",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"认证信息已保存",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    //将供应商名称、编码传入到modal4中
+    function getSupplierForLabel() {
+        var supplierCode = $("#importantCode").val();
+        $("#supplierCode4").val(supplierCode);
+        var supplierName = $("#supplierName").val();
+        $("#supplierName4").val(supplierName);
+    }
+
+    //保存标签
+    function saveLabel() {
+        var supplierCode = $("#supplierCode4").val();
+        var labelName = $("#labelName").val();
+        if(labelName == ""){
+            $.message({
+                message:"请填写标签名称",
+                type:"error"
+            });
+            return false;
+        }
+        $.ajax({
+            type:"post",
+            data:{"supplierCode":supplierCode , "labelName":labelName},
+            url:"createLabel",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"标签已添加",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+    //获取标签纸并进行相关操作
+    function getLabelVal(obj) {
+        var labelName = obj.innerText;
+        var supplierCode = $("#importantCode").val();
+        // alert(labelName);
+        var a=confirm("是否删除标签【"+labelName+"】？");
+        if(a==true){
+            $.ajax({
+                type:"delete",
+                data:{"supplierCode":supplierCode , "labelName":labelName},
+                url:"deleteLabel",
+                async:false,
+                success:function (data) {
+                    if (data == "OK"){
+                        $.message({
+                            message:"标签已删除",
+                            type:"success"
+                        });
+                        getDetail();
+                    }else{
+                        $.message({
+                            message:data,
+                            type:"error"
+                        })
+                    }
+                }
+            })
+        }else{
+
+        }
+
+    }
+
+    //将供应商名称/编码传入到模态框5 中
+    function getSupplierForMaterial() {
+        var supplierCode = $("#importantCode").val();
+        $("#supplierCode5").val(supplierCode);
+        var supplierName = $("#supplierName").val();
+        $("#supplierName5").val(supplierName);
+    }
+
+    //上传物料信息
+    function uploadMaterial() {
+        var supplierCode = $("#supplierCode5").val();
+        $.ajaxFileUpload({
+            type:"post",
+            fileElementId:"materialExcel",
+            url:"uploadMaterialInfo",
+            data:{"supplierCode":supplierCode},
+            async:false,
+            dataType:'text',
+            success:function(data){
+                if(data.includes("成功")){
+                    $.message({
+                        message:data,
+                        type:'success'
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:'error'
+                    });
+                }
+            },
+            error:function(){
+                alert("设备类型文件上传出错");
+            }
+        })
+    }
+
+    //点击编辑，将基础数据input的readonly去除，并将编辑换成保存
+    function clickWrite() {
+        document.getElementById("simpleName").removeAttribute('readOnly');
+        document.getElementById("supplierNature").removeAttribute('readOnly');
+        document.getElementById("supplyType").removeAttribute('readOnly');
+        document.getElementById("relationship").removeAttribute('readOnly');
+        document.getElementById("area").removeAttribute('readOnly');
+        document.getElementById("website").removeAttribute('readOnly');
+        document.getElementById("postAddress").removeAttribute('readOnly');
+        document.getElementById("addressDetail").removeAttribute('readOnly');
+        $("#operateTd").html("");
+        $("#operateTd").append("<a href=\"#\" onclick=\"clickSave()\">保存</a>");
+    }
+
+    function clickSave() {
+        document.getElementById("simpleName").setAttribute('readOnly','true');
+        document.getElementById("supplierNature").setAttribute('readOnly','true');
+        document.getElementById("supplyType").setAttribute('readOnly','true');
+        document.getElementById("relationship").setAttribute('readOnly','true');
+        document.getElementById("area").setAttribute('readOnly','true');
+        document.getElementById("website").setAttribute('readOnly','true');
+        document.getElementById("postAddress").setAttribute('readOnly','true');
+        document.getElementById("addressDetail").setAttribute('readOnly','true');
+        $("#operateTd").html("");
+        $("#operateTd").append("<a href=\"#\" onclick=\"clickWrite()\">编辑</a>");
+
+        //保存供应商基础信息
+
+        var supplierCode = $("#supplierCode").val();
+        var simpleName = $("#simpleName").val();
+        var supplierNature = $("#supplierNature").val();
+        var supplyType = $("#supplyType").val();
+        var relationship = $("#relationship").val();
+        var area = $("#area").val();
+        var website = $("#website").val();
+        var postAddress = $("#postAddress").val();
+        var addressDetail = $("#addressDetail").val();
+
+        var data = {"supplierCode":supplierCode , "simpleName":simpleName , "supplierNature":supplierNature , "supplyType":supplyType , "relationship":relationship , "area":area , "website":website , "postAddress":postAddress , "addressDetail":addressDetail};
+        $.ajax({
+            type:"put",
+            data:data,
+            url:"changeSupplier",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"信息已保存",
+                        type:"success"
+                    });
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>
+
