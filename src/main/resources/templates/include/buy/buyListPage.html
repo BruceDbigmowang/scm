@@ -1,0 +1,75 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget" style="height: 665px;">
+
+        <div class="row" style="background-color: white;">
+            <table class="table">
+                <tr>
+                    <td style="width: 80px;">搜索内容</td>
+                    <td><input id="search" class="form-control" placeholder="采购单号/询价单号/经办人"></td>
+                    <td style="width: 80px;">项目</td>
+                    <td><input id="project" class="form-control"></td>
+                    <td style="width: 80px;">采购类型</td>
+                    <td>
+                        <select id="buyType" class="form-control">
+                            <option value="">全部</option>
+                            <option value="MRO">MRO</option>
+                            <option value="刀具">刀具</option>
+                        </select>
+                    </td>
+                    <td style="width: 80px;">订单状态</td>
+                    <td>
+                        <select id="orderStatus" class="form-control">
+                            <option value="">全部</option>
+                            <option value="C">禁用</option>
+                            <option value="O">正常</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="text-align: right;">
+                        <button class="btn btn-primary">重置</button>
+                        <button class="btn btn-primary" style="margin-left: 10px;" onclick="findAllByCondition()">搜索</button>
+                    </td>
+                </tr>
+            </table>
+            <div id="result"></div>
+            <table class="table table-striped table-bordered table-hover  table-condensed" style="margin-top: 40px;">
+                <thead>
+                <tr>
+                    <th><input id="chooseAll" type="checkbox" style="vertical-align: middle;margin-top: 0px;" onclick="setAllNo()">全选</th>
+                    <th>采购单号</th>
+                    <th>询价单号</th>
+                    <th>生成时间</th>
+                    <th>项目</th>
+                    <th>采购类型</th>
+                    <th>采购金额</th>
+                    <th>经办人</th>
+                    <th>订单状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="sumList"></tbody>
+            </table>
+            <div id="pageDIV" style="text-align: center;"></div>
+        </div>
+
+    </div>
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

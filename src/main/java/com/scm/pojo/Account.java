@@ -1,6 +1,7 @@
 package com.scm.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "SCM_Account")
 @JsonIgnoreProperties({"handler" , "hibernateLazyInitializer"})
+@Proxy(lazy = false)
 public class Account {
 
     @Id

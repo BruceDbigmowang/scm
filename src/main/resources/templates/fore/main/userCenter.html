@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>个人中心</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/index/userCenterPage::html" ></div>
+</div>
+
+<script>
+
+    $(function () {
+        loadUserInfo();
+    })
+
+    function loadUserInfo() {
+        $.ajax({
+            type:"get",
+            url:"getAccountInfo",
+            async:false,
+            success:function (data) {
+                $("#name").val(data.name);
+                $("#phone").val(data.phone);
+                $("#mail").val(data.email);
+                $("#pwd").val(data.password);
+            }
+        })
+    }
+
+    function changePhone() {
+        var phone = $("#mobile").val();
+        if(phone == ""){
+            $.message({
+                message:"请输入手机号",
+                type:"error"
+            });
+            return false;
+        }
+        if(phone.length !== 11){
+            $.message({
+                message:"请完整填写手机号",
+                type:"error"
+            });
+            return false;
+        }
+        var isnum = /^\d+$/.test(phone);
+        if(isnum == false){
+            $.message({
+                message:"手机号只能输入数字",
+                type:"error"
+            });
+            return false;
+        }
+        $.ajax({
+            type:"put",
+            data:{"phone":phone},
+            url:"changePhone",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"手机号已修改",
+                        type:"success"
+                    });
+                    $("#myModal").modal('hide');
+                    loadUserInfo();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    }
+
+    function changeEmail() {
+        var email = $("#email").val();
+        if(email == ""){
+            $.message({
+                message:"请输入邮箱地址",
+                type:"error"
+            });
+            return false;
+        }
+        var re=/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+        if (re.test(email) != true){
+            $.message({
+                message:"邮箱地址输入错误",
+                type:"error"
+            });
+            return false;
+        }
+        $.ajax({
+            type:"put",
+            data:{"email":email},
+            url:"changeEmail",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"邮箱地址已修改",
+                        type:"success"
+                    });
+                    $("#myModal2").modal('hide');
+                    loadUserInfo();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    }
+
+    function changepwd() {
+        var pwd1 = $("#pwd1").val();
+        if(pwd1 == ""){
+            $.message({
+                message:"请输入旧密码",
+                type:"error"
+            });
+            return false;
+        }
+        var pwd2 = $("#pwd2").val();
+        if(pwd2 == ""){
+            $.message({
+                message:"请输入新密码",
+                type:"error"
+            });
+            return false;
+        }
+        var pwd3 = $("#pwd3").val();
+        if(pwd3 == ""){
+            $.message({
+                message:"请再输入新密码",
+                type:"error"
+            });
+            return false;
+        }
+        if(pwd2 != pwd3){
+            $.message({
+                message:"两次输入的新密码不一致",
+                type:"error"
+            });
+            return false;
+        }
+        var data = {"oldPwd":pwd1 , "newPwd":pwd2};
+        $.ajax({
+            type:"put",
+            data:data,
+            url:"changePassword",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"密码修改成功",
+                        type:"success"
+                    });
+                    $("#pwd1").val("");
+                    $("#pwd2").val("");
+                    $("#pwd3").val("");
+                    $("#myModal2").modal('hide');
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+    }
+</script>
+</body>
+</html>

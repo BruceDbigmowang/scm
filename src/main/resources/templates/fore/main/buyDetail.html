@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>采购单详情</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/buy/buyDetailPage::html" ></div>
+</div>
+<script>
+    //获取URL中参数的值
+    function getQueryVariable(variable){
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    $(function () {
+        getBuyOrderDetail();
+    })
+
+    function getBuyOrderDetail() {
+        var buyID = getQueryVariable("buyID");
+        $.ajax({
+            type:"get",
+            data:{"buyID":buyID},
+            url:"getBuyOrderDetail",
+            async:false,
+            success:function (data) {
+                var buySum = data.sum;
+                var details = data.details;
+                $("#buySum").html("");
+                $("#buySum").append("<tr>"
+                    +"<td>采购单号</td>"
+                    +"<td>"+buySum.id+"</td>"
+                    +"<td>询价单号</td>"
+                    +"<td>"+buySum.inquiryID+"</td>"
+                    +"</tr>");
+                $("#buySum").append("<tr>"
+                    +"<td>项目</td>"
+                    +"<td>"+buySum.project+"</td>"
+                    +"<td>采购类型</td>"
+                    +"<td>"+buySum.buyType+"</td>"
+                    +"</tr>");
+                $("#buySum").append("<tr>"
+                    +"<td>采购金额</td>"
+                    +"<td>"+buySum.buyMoney+"</td>"
+                    +"<td>经办人</td>"
+                    +"<td>"+buySum.operatorName+"</td>"
+                    +"</tr>");
+                $("#buySum").append("<tr>"
+                    +"<td>订单状态</td>"
+                    +"<td>"+buySum.statusDesc+"</td>"
+                    +"<td></td>"
+                    +"<td></td>"
+                    +"</tr>");
+
+                $("#buyDetails").html("");
+                for(var i = 0 ; i < details.length ; i++) {
+                    var num = i + 1;
+                    $("#buyDetails").append("<tr>"
+                        + "<td>" + num + "</td>"
+                        + "<td>" + details[i].kcode + "</td>"
+                        + "<td>" + details[i].supplierName + "</td>"
+                        + "<td>" + details[i].supplierCode + "</td>"
+                        + "<td>" + details[i].productName + "</td>"
+                        + "<td>" + details[i].specification + "</td>"
+                        + "<td>" + details[i].brand + "</td>"
+                        + "<td>" + details[i].quantity + "</td>"
+                        + "<td>" + details[i].unit + "</td>"
+                        + "<td>" + '<input name="taxRate" style="width: 80px;" class="form-control" readonly value="' + details[i].taxRate * 100 + '">' + "%" + "</td>"
+                        + "<td>" + details[i].price + "</td>"
+                        + "<td>" + '<input name="agreePrice" class="form-control" readonly value="' + details[i].agreePrice + '">' + "</td>"
+                        + "<td>" + details[i].total + "</td>"
+                        + "<td>" + details[i].deadline + "</td>"
+                        + "<td>" + '<input name="agreeDeadline" class="form-control" readonly value="' + details[i].agreeDeadline + '">' + "</td>"
+                        + "<td>" + '<input name="note" class="form-control" readonly value="' + details[i].note + '">' + "</td>"
+                        + "</tr>");
+                }
+
+            }
+        })
+    }
+
+    function changeCanWrite() {
+        $("input").each(function () {
+            $(this).removeAttr("readonly");
+        });
+        $("#operateDIV").html("");
+        $("#operateDIV").append('<a href="#" onclick="saveBuyDetail()">保存采购单</a>\n' +
+            '                <button class="btn btn-primary" style="margin-left: 10px;">推送到TDMP</button>');
+    }
+    
+    function saveBuyDetail() {
+        var buyID = getQueryVariable("buyID");
+        var taxRates = [];
+        $("input[name='taxRate']").each(function () {
+            taxRates.push($(this).val());
+        });
+        var agreePrices = [];
+        $("input[name='agreePrice']").each(function () {
+            agreePrices.push($(this).val());
+        });
+        var agreeDeadlines = [];
+        $("input[name='agreeDeadline']").each(function () {
+            agreeDeadlines.push($(this).val());
+        });
+        var notes = [];
+        $("input[name='note']").each(function () {
+            notes.push($(this).val());
+        });
+        var data = {"buyID":buyID , "taxRates":taxRates , "agreePrices":agreePrices , "agreeDeadlines":agreeDeadlines , "notes":notes};
+        $.ajax({
+            type:"put",
+            data:data,
+            url:"changeBuyOrder",
+            async:false,
+            traditional:true,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"采购订单已修改",
+                        type:"success"
+                    });
+                    $("input").each(function () {
+                        $(this).attr("readonly","readonly");
+                    });
+                    $("#operateDIV").html("");
+                    $("#operateDIV").append('<a href="#" onclick="changeCanWrite()">修改采购单</a>\n' +
+                        '                <button class="btn btn-primary" style="margin-left: 10px;">推送到TDMP</button>');
+                    getBuyOrderDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    }
+</script>
+<style>
+    #mainContent{
+        overflow:hidden;
+        width:100%;
+    }
+    #detailDiv{
+        width:calc(100% + 15px);/*使滚动条超出当前元素的父元素边界，而父元素设置了overflow为hidden，使溢出内容隐藏，即隐藏了滚动条*/
+        height:400px;
+        padding-right:15px;
+        box-sizing:content-box;/*兼容ie，使盒模型为w3c盒模型*/
+        overflow-y:scroll;/*控制能沿y轴滚动*/
+    }
+    #detailTB{
+        width:100%;
+    }
+</style>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget" style="height: 1065px;">
+
+        <div class="flow" style="background-color: white;">
+
+            <div style="border:1px solid #000;width: 100%;height:1000px;">
+                <div style="width: 100%;">
+                    <span><h4>询价详情</h4></span>
+                </div>
+                <div style="width: 77%;float: left;border:1px solid #000;margin-left: 10px;height: 490px;">
+                    <table class="table">
+                        <tr>
+                            <td>询价单号</td>
+                            <td><input id="inquiryID" class="form-control" readonly></td>
+                            <td>询价日期</td>
+                            <td><input id="inquiryDate" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>项目</td>
+                            <td><input id="project" class="form-control" readonly></td>
+                            <td>询价类型</td>
+                            <td>
+                                <select id="type" class="form-control" disabled>
+                                    <option value="">请选择</option>
+                                    <option value="刀具">刀具</option>
+                                    <option value="MRO">MRO</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>截止日期</td>
+                            <td><input id="deadline" class="form-control" readonly></td>
+                            <td>状态</td>
+                            <td><input id="status" class="form-control" readonly></td>
+                        </tr>
+                    </table>
+                    <table class="table table-striped table-bordered table-hover  table-condensed">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>K编码</th>
+                            <th>名称</th>
+                            <th>规格/型号</th>
+                            <th>品牌</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                        </tr>
+                        </thead>
+                        <tbody id="details"></tbody>
+                    </table>
+                </div>
+                <div id="answerStatus" style="width:20%;float: left;border:1px solid #000;margin-left: 10px;height: 490px;font-size: 15px;">
+
+                </div>
+
+                <div style="width: 75%;float: left;">
+                    <span><h4>报价分析</h4></span>
+                </div>
+                <div style="float: left;">
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="saveBuyRecord()">生成采购单</button>
+                    <button class="btn btn-primary" style="margin-left: 5px;margin-top: 10px;" data-toggle="modal" data-target="#myModal" onclick="loadSolution()">一键分析</button>
+                </div>
+                <div>
+                    <table class="table table-striped table-bordered table-hover  table-condensed">
+                        <thead>
+                        <tr>
+                            <th>K编码</th>
+                            <th>名称</th>
+                            <th>规格/型号</th>
+                            <th>品牌</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                            <th>供应商</th>
+                            <th><div class="on">含税单价<i class="angle_top" onclick="choosePriceDown()"></i><i class="angle_bottom" onclick="choosePriceUp()"></i></div></th>
+                            <th>合计价格</th>
+                            <th><div class="on">交货周期<i class="angle_top" onclick="chooseCycleDown()"></i><i class="angle_bottom" onclick="chooseCycleUp()"></i></div></th>
+                            <th>报价有效期</th>
+                        </tr>
+                        </thead>
+                        <tbody id="allAnswer"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="myModal"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="width: 1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">方案分析</h4>
+                </div>
+                <div class="modal-body">
+
+                    <ul id="myTab" class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#dota" data-toggle="tab">
+                                最低成本
+                            </a>
+                        </li>
+                        <li><a href="#lol" data-toggle="tab">最快到货</a></li>
+                        <li><a href="#storm" data-toggle="tab">最优方案</a></li>
+                    </ul>
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade in active" id="dota" style="text-align: center;">
+                            <table class="table table-striped table-bordered table-hover  table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>K编码</th>
+                                    <th>名称</th>
+                                    <th>规格/型号</th>
+                                    <th>品牌</th>
+                                    <th>数量</th>
+                                    <th>单位</th>
+                                    <th>供应商</th>
+                                    <th>含税单价</th>
+                                    <th>合计价格</th>
+                                    <th>交货周期</th>
+                                    <th>报价有效期</th>
+                                </tr>
+                                </thead>
+                                <tbody id="answer1"></tbody>
+                            </table>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="chooseCheapest()">生成采购订单</button>
+                        </div>
+                        <div class="tab-pane fade" id="lol" style="text-align: center;">
+                            <table class="table table-striped table-bordered table-hover  table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>K编码</th>
+                                    <th>名称</th>
+                                    <th>规格/型号</th>
+                                    <th>品牌</th>
+                                    <th>数量</th>
+                                    <th>单位</th>
+                                    <th>供应商</th>
+                                    <th>含税单价</th>
+                                    <th>合计价格</th>
+                                    <th>交货周期</th>
+                                    <th>报价有效期</th>
+                                </tr>
+                                </thead>
+                                <tbody id="answer2"></tbody>
+                            </table>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="chooseFastest()">生成采购订单</button>
+                        </div>
+                        <div class="tab-pane fade" id="storm" style="text-align: center;">
+                            <table class="table table-striped table-bordered table-hover  table-condensed">
+                                <thead>
+                                <tr>
+                                    <th>K编码</th>
+                                    <th>名称</th>
+                                    <th>规格/型号</th>
+                                    <th>品牌</th>
+                                    <th>数量</th>
+                                    <th>单位</th>
+                                    <th>供应商</th>
+                                    <th>含税单价</th>
+                                    <th>合计价格</th>
+                                    <th>交货周期</th>
+                                    <th>报价有效期</th>
+                                </tr>
+                                </thead>
+                                <tbody id="answer3"></tbody>
+                            </table>
+                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="chooseBest()">生成采购订单</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

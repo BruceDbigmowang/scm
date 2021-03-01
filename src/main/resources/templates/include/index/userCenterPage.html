@@ -1,0 +1,115 @@
+<div id="allContent" class="content" th:fragment="html">
+
+
+    <!-- START CONTAINER -->
+    <div id="mainContent" class="container-widget" style="height: 665px;">
+
+        <div class="row" style="background-color: white;height: 600px;text-align: center;">
+            <table class="table" style="width: 60%;margin:0px auto;margin-top: 15%;">
+                <tr style="height: 50px;">
+                    <td>名称</td>
+                    <td><input id="name" class="form-control" readonly></td>
+                    <td></td>
+                </tr>
+                <tr style="height: 50px;">
+                    <td>手机号</td>
+                    <td><input id="phone" class="form-control" readonly></td>
+                    <td><a href="#" data-toggle="modal" data-target="#myModal">修改</a></td>
+                </tr>
+                <tr style="height: 50px;">
+                    <td>邮箱</td>
+                    <td><input id="mail" class="form-control" readonly></td>
+                    <td><a href="#" data-toggle="modal" data-target="#myModal2">修改</a></td>
+                </tr>
+                <tr style="height: 50px;">
+                    <td>密码</td>
+                    <td><input id="pwd" type="password" class="form-control" readonly></td>
+                    <td><a href="#" data-toggle="modal" data-target="#myModal3">修改</a></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="myModal"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改手机号</h4>
+                </div>
+                <div class="modal-body">
+                    <p>手机号</p>
+                    <input id="mobile" class="form-control" placeholder="请输入手机号">
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="changePhone()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="myModal2"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改邮箱</h4>
+                </div>
+                <div class="modal-body">
+                    <p>邮箱</p>
+                    <input id="email" class="form-control" placeholder="请输入邮箱">
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="changeEmail()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="myModal3"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改密码</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr style="height: 50px;">
+                            <td>旧密码</td>
+                            <td><input id="pwd1" type="password" class="form-control" placeholder="请输入旧密码"></td>
+                        </tr>
+                        <tr style="height: 50px;">
+                            <td>新密码</td>
+                            <td><input id="pwd2" type="password" class="form-control" placeholder="请输入新密码"></td>
+                        </tr>
+                        <tr style="height: 50px;">
+                            <td>确认密码</td>
+                            <td><input id="pwd3" type="password" class="form-control" placeholder="请再次输入新密码"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="changepwd()">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- Start Footer -->
+    <div class="row footer">
+        <div class="col-md-6 text-left">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="col-md-6 text-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </div>
+    <!-- End Footer -->
+
+
+</div>

@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>询价单分析</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/inquiry/analysisDetailPage::html" ></div>
+</div>
+<script>
+
+    var middleNo = 0;
+    $(function () {
+        getDetail();
+    })
+    //获取URL中参数的值
+    function getQueryVariable(variable){
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    function getDetail() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetailForAnalysis",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+                var completeNo = data.completeNo;
+                middleNo = completeNo;
+                var num = data.num;
+                $("#allAnswer").html("");
+                if(completeNo == 0){
+                    for(var i = 0 ; i < details.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+details[i].kcode+"</td>"
+                            +"<td>"+details[i].productName+"</td>"
+                            +"<td>"+details[i].specification+"</td>"
+                            +"<td>"+details[i].receiveBrand+"</td>"
+                            +"<td>"+details[i].quantity+"</td>"
+                            +"<td>"+details[i].unit+"</td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"</tr>");
+                    }
+                }else if(completeNo == 1){
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < answerList.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+answerList[i].kcode+"</td>"
+                            +"<td>"+answerList[i].productName+"</td>"
+                            +"<td>"+answerList[i].specification+"</td>"
+                            +"<td>"+answerList[i].receiveBrand+"</td>"
+                            +"<td>"+answerList[i].quantity+"</td>"
+                            +"<td>"+answerList[i].unit+"</td>"
+                            +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top: -3px;" value="'+answerList[i].supplierCode+'">'+answerList[i].supplierName+"</td>"
+                            +"<td>"+answerList[i].agreePrice+"</td>"
+                            +"<td>"+answerList[i].agreeTotal+"</td>"
+                            +"<td>"+answerList[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+answerList[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < details.length ; i++){
+                        for(var j = 0 ; j < completeNo ; j++){
+                            if(j == 0){
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>" +'<td rowspan="'+completeNo+'">'+answerList[no].kcode+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].productName+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].specification+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].receiveBrand+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].quantity+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].unit+"</td>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }else{
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    function getSupplierInquiry(supplierCode) {
+        var inquiryID = getQueryVariable("inquiryID");
+        window.location.href="foreSupplierInquiry?supplierCode="+supplierCode+"&&inquiryID="+inquiryID;
+    }
+
+    // 当勾选CheckBox时 获取CheckBox所在的行号
+    // 通过计算 判断是否对同一件物品勾选了两家供应商
+    // 若存在该情况 保留最新勾选的，取消先前勾选的
+    function chooseCheck(obj) {
+        if(obj.checked == true){
+
+            //获取当前点击的CheckBox所在的行号
+            var trNo = obj.parentNode.parentNode.rowIndex - 1;
+
+            //获取所有选中的CheckBox所在的行号
+            var arr = [];
+            $("input[type=checkbox]:checked").each(function () {
+                var target = $(this).parent().parent().index();
+                arr.push(target);
+            });
+            // var supplierArr = [];
+            // $("input[type=checkbox]:checked").each(function () {
+            //     supplierArr.push($(this).val());
+            // });
+            var mm = Math.floor(trNo / middleNo);
+
+            //遍历所有CheckBox选中的行
+            for(var i = 0 ; i < arr.length ; i++){
+                var number = arr[i];
+                //如果是当前选中的行
+                if(number == trNo){
+                    // var supplierCode = supplierArr[i];
+                    var inputs = document.getElementsByName("supplier");
+                    var allTr = [];
+                    $("input[name='supplier']").each(function () {
+                        var target = $(this).parent().parent().index();
+                        allTr.push(target);
+                    });
+                    for (var j =0;j<inputs.length;j++) {
+                        if (trNo===allTr[j]) {
+                            inputs[j].checked = true;
+                        }
+
+                    }
+                }else{
+                    // 如果不是当前选中的行
+                    var ss = Math.floor(number / middleNo);
+                    // 选中行与当前行求余数
+                    // 若余数相同，取消非当前选中
+                    if(mm == ss){
+                        // var supplierCode = supplierArr[i];
+                        var inputs = document.getElementsByName("supplier");
+                        var allTr = [];
+                        $("input[name='supplier']").each(function () {
+                            var target = $(this).parent().parent().index();
+                            allTr.push(target);
+                        });
+                        for (var j =0;j<inputs.length;j++) {
+                            if (number===allTr[j]) {
+                                inputs[j].checked = false;
+                            }
+
+                        }
+                    }else{
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    //根据含税单价升序
+    function choosePriceUp() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetailForAnalysisPriceAsc",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+                var completeNo = data.completeNo;
+                middleNo = completeNo;
+                var num = data.num;
+                $("#allAnswer").html("");
+                if(completeNo == 0){
+                    for(var i = 0 ; i < details.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+details[i].kcode+"</td>"
+                            +"<td>"+details[i].productName+"</td>"
+                            +"<td>"+details[i].specification+"</td>"
+                            +"<td>"+details[i].receiveBrand+"</td>"
+                            +"<td>"+details[i].quantity+"</td>"
+                            +"<td>"+details[i].unit+"</td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"</tr>");
+                    }
+                }else if(completeNo == 1){
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < answerList.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+answerList[i].kcode+"</td>"
+                            +"<td>"+answerList[i].productName+"</td>"
+                            +"<td>"+answerList[i].specification+"</td>"
+                            +"<td>"+answerList[i].receiveBrand+"</td>"
+                            +"<td>"+answerList[i].quantity+"</td>"
+                            +"<td>"+answerList[i].unit+"</td>"
+                            +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top: -3px;" value="'+answerList[i].supplierCode+'">'+answerList[i].supplierName+"</td>"
+                            +"<td>"+answerList[i].agreePrice+"</td>"
+                            +"<td>"+answerList[i].agreeTotal+"</td>"
+                            +"<td>"+answerList[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+answerList[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < details.length ; i++){
+                        for(var j = 0 ; j < completeNo ; j++){
+                            if(j == 0){
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>" +'<td rowspan="'+completeNo+'">'+answerList[no].kcode+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].productName+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].specification+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].receiveBrand+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].quantity+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].unit+"</td>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }else{
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
+    }
+    //根据含税单价降序
+    function choosePriceDown() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetailForAnalysisPriceDesc",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+                var completeNo = data.completeNo;
+                middleNo = completeNo;
+                var num = data.num;
+                $("#allAnswer").html("");
+                if(completeNo == 0){
+                    for(var i = 0 ; i < details.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+details[i].kcode+"</td>"
+                            +"<td>"+details[i].productName+"</td>"
+                            +"<td>"+details[i].specification+"</td>"
+                            +"<td>"+details[i].receiveBrand+"</td>"
+                            +"<td>"+details[i].quantity+"</td>"
+                            +"<td>"+details[i].unit+"</td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"</tr>");
+                    }
+                }else if(completeNo == 1){
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < answerList.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+answerList[i].kcode+"</td>"
+                            +"<td>"+answerList[i].productName+"</td>"
+                            +"<td>"+answerList[i].specification+"</td>"
+                            +"<td>"+answerList[i].receiveBrand+"</td>"
+                            +"<td>"+answerList[i].quantity+"</td>"
+                            +"<td>"+answerList[i].unit+"</td>"
+                            +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top: -3px;" value="'+answerList[i].supplierCode+'">'+answerList[i].supplierName+"</td>"
+                            +"<td>"+answerList[i].agreePrice+"</td>"
+                            +"<td>"+answerList[i].agreeTotal+"</td>"
+                            +"<td>"+answerList[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+answerList[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < details.length ; i++){
+                        for(var j = 0 ; j < completeNo ; j++){
+                            if(j == 0){
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>" +'<td rowspan="'+completeNo+'">'+answerList[no].kcode+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].productName+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].specification+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].receiveBrand+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].quantity+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].unit+"</td>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }else{
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
+    }
+    //根据交货周期升序
+    function chooseCycleUp() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetailForAnalysisCycleAsc",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+                var completeNo = data.completeNo;
+                middleNo = completeNo;
+                var num = data.num;
+                $("#allAnswer").html("");
+                if(completeNo == 0){
+                    for(var i = 0 ; i < details.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+details[i].kcode+"</td>"
+                            +"<td>"+details[i].productName+"</td>"
+                            +"<td>"+details[i].specification+"</td>"
+                            +"<td>"+details[i].receiveBrand+"</td>"
+                            +"<td>"+details[i].quantity+"</td>"
+                            +"<td>"+details[i].unit+"</td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"</tr>");
+                    }
+                }else if(completeNo == 1){
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < answerList.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+answerList[i].kcode+"</td>"
+                            +"<td>"+answerList[i].productName+"</td>"
+                            +"<td>"+answerList[i].specification+"</td>"
+                            +"<td>"+answerList[i].receiveBrand+"</td>"
+                            +"<td>"+answerList[i].quantity+"</td>"
+                            +"<td>"+answerList[i].unit+"</td>"
+                            +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top: -3px;" value="'+answerList[i].supplierCode+'">'+answerList[i].supplierName+"</td>"
+                            +"<td>"+answerList[i].agreePrice+"</td>"
+                            +"<td>"+answerList[i].agreeTotal+"</td>"
+                            +"<td>"+answerList[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+answerList[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < details.length ; i++){
+                        for(var j = 0 ; j < completeNo ; j++){
+                            if(j == 0){
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>" +'<td rowspan="'+completeNo+'">'+answerList[no].kcode+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].productName+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].specification+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].receiveBrand+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].quantity+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].unit+"</td>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }else{
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
+    }
+    //根据交货周期降序
+    function chooseCycleDown() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findInquiryDetailForAnalysisCycleDesc",
+            async:false,
+            success:function (data) {
+                var sum = data.sum;
+                var details = data.details;
+                var suppliers = data.suppliers;
+                $("#inquiryID").val(sum.inquiryID);
+                $("#inquiryDate").val(sum.inquiryDate);
+                $("#project").val(sum.project);
+                $("#deadline").val(sum.deadline);
+                var all_options = document.getElementById("type").options;
+                for (i=0; i<all_options.length; i++){
+                    if (all_options[i].value == sum.inquiryType){
+                        all_options[i].selected = true;
+                    }
+                }
+                $("#status").val(sum.statusDes);
+                $("#details").html("");
+                for(var i = 0 ; i < details.length ; i++){
+                    var no = i + 1;
+                    $("#details").append("<tr>"
+                        +"<td>"+no+"</td>"
+                        +"<td>"+details[i].kcode+"</td>"
+                        +"<td>"+details[i].productName+"</td>"
+                        +"<td>"+details[i].specification+"</td>"
+                        +"<td>"+details[i].brand+"</td>"
+                        +"<td>"+details[i].quantity+"</td>"
+                        +"<td>"+details[i].unit+"</td>"
+                        +"</tr>")
+                }
+                var result = data.result;
+                $("#answerStatus").html("");
+                $("#answerStatus").append(result+"<br><br>");
+                for(var i = 0 ; i < suppliers.length ; i++){
+                    if(suppliers[i].status == "C"){
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
+                    }else{
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                    }
+                }
+                var completeNo = data.completeNo;
+                middleNo = completeNo;
+                var num = data.num;
+                $("#allAnswer").html("");
+                if(completeNo == 0){
+                    for(var i = 0 ; i < details.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+details[i].kcode+"</td>"
+                            +"<td>"+details[i].productName+"</td>"
+                            +"<td>"+details[i].specification+"</td>"
+                            +"<td>"+details[i].receiveBrand+"</td>"
+                            +"<td>"+details[i].quantity+"</td>"
+                            +"<td>"+details[i].unit+"</td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"<td></td>"
+                            +"</tr>");
+                    }
+                }else if(completeNo == 1){
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < answerList.length ; i++){
+                        $("#allAnswer").append("<tr>" +"<td>"+answerList[i].kcode+"</td>"
+                            +"<td>"+answerList[i].productName+"</td>"
+                            +"<td>"+answerList[i].specification+"</td>"
+                            +"<td>"+answerList[i].receiveBrand+"</td>"
+                            +"<td>"+answerList[i].quantity+"</td>"
+                            +"<td>"+answerList[i].unit+"</td>"
+                            +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top: -3px;" value="'+answerList[i].supplierCode+'">'+answerList[i].supplierName+"</td>"
+                            +"<td>"+answerList[i].agreePrice+"</td>"
+                            +"<td>"+answerList[i].agreeTotal+"</td>"
+                            +"<td>"+answerList[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+answerList[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    var answerList = data.answerList;
+                    for(var i = 0 ; i < details.length ; i++){
+                        for(var j = 0 ; j < completeNo ; j++){
+                            if(j == 0){
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>" +'<td rowspan="'+completeNo+'">'+answerList[no].kcode+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].productName+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].specification+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].receiveBrand+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].quantity+"</td>"
+                                    +'<td style="vertical-align: middle;" rowspan="'+completeNo+'">'+answerList[no].unit+"</td>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }else{
+                                var no =i*completeNo + j;
+                                $("#allAnswer").append("<tr>"
+                                    +"<td>"+'<input name="supplier" type="checkbox" style="vertical-align: middle;margin-top:-3px;" onclick="chooseCheck(this)" value="'+answerList[i].supplierCode+'">'+answerList[no].supplierName+"</td>"
+                                    +"<td>"+answerList[no].agreePrice+"</td>"
+                                    +"<td>"+answerList[no].agreeTotal+"</td>"
+                                    +"<td>"+answerList[no].agreeCycle+"天"+"</td>"
+                                    +"<td>"+answerList[no].validity+"</td>"
+                                    +"</tr>");
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    function loadSolution() {
+        var inquiryID = getQueryVariable("inquiryID");
+        $.ajax({
+            type:"get",
+            data:{"inquiryID":inquiryID},
+            url:"findSolution",
+            async:false,
+            success:function (data) {
+                var info1 = data.info1;
+                if(info1 == "ok"){
+                    $("#answer1").html("");
+                    var list1 = data.list1;
+                    for(var i = 0 ; i < list1.length ; i++){
+                        $("#answer1").append("<tr>"
+                            +"<td>"+list1[i].kcode+"</td>"
+                            +"<td>"+list1[i].productName+"</td>"
+                            +"<td>"+list1[i].specification+"</td>"
+                            +"<td>"+list1[i].receiveBrand+"</td>"
+                            +"<td>"+list1[i].quantity+"</td>"
+                            +"<td>"+list1[i].unit+"</td>"
+                            +"<td>"+list1[i].supplierName+"</td>"
+                            +"<td>"+list1[i].agreePrice+"</td>"
+                            +"<td>"+list1[i].agreeTotal+"</td>"
+                            +"<td>"+list1[i].agreeCycle+"天"+"</td>"
+                            +"<td>"+list1[i].validity+"</td>"
+                            +"</tr>");
+                    }
+                }else{
+                    $("#answer1").html("");
+                }
+                var info2 = data.info2;
+                if(info2 == "ok") {
+                    $("#answer2").html("");
+                    var list2 = data.list2;
+                    for (var i = 0; i < list2.length; i++) {
+                        $("#answer2").append("<tr>"
+                            + "<td>" + list2[i].kcode + "</td>"
+                            + "<td>" + list2[i].productName + "</td>"
+                            + "<td>" + list2[i].specification + "</td>"
+                            + "<td>" + list2[i].receiveBrand + "</td>"
+                            + "<td>" + list2[i].quantity + "</td>"
+                            + "<td>" + list2[i].unit + "</td>"
+                            + "<td>" + list2[i].supplierName + "</td>"
+                            + "<td>" + list2[i].agreePrice + "</td>"
+                            + "<td>" + list2[i].agreeTotal + "</td>"
+                            + "<td>" + list2[i].agreeCycle + "天" + "</td>"
+                            + "<td>" + list2[i].validity + "</td>"
+                            + "</tr>");
+                    }
+                }else{
+                    $("#answer2").html("");
+                }
+                var info3 = data.info3;
+                if(info3 == "ok") {
+                    $("#answer3").html("");
+                    var list3 = data.list3;
+                    for (var i = 0; i < list3.length; i++) {
+                        $("#answer3").append("<tr>"
+                            + "<td>" + list3[i].kcode + "</td>"
+                            + "<td>" + list3[i].productName + "</td>"
+                            + "<td>" + list3[i].specification + "</td>"
+                            + "<td>" + list3[i].receiveBrand + "</td>"
+                            + "<td>" + list3[i].quantity + "</td>"
+                            + "<td>" + list3[i].unit + "</td>"
+                            + "<td>" + list3[i].supplierName + "</td>"
+                            + "<td>" + list3[i].agreePrice + "</td>"
+                            + "<td>" + list3[i].agreeTotal + "</td>"
+                            + "<td>" + list3[i].agreeCycle + "天" + "</td>"
+                            + "<td>" + list3[i].validity + "</td>"
+                            + "</tr>");
+                    }
+                }else{
+                    $("#answer3").html("");
+                }
+            }
+        })
+    }
+
+    // 若自行勾选各个物品的供应商
+    // 首先先判断勾选的数量是否与询价物品总数一致
+    // 若一致  将询价单单号，选中的供应商编号传至后台
+    // 若不一致 报错
+    function saveBuyRecord() {
+        var arr = [];
+        $("input[type=checkbox]:checked").each(function () {
+            arr.push($(this).val());
+        });
+        if(arr.length != middleNo){
+            $.message({
+                message:"请检查供应商是否均已勾选",
+                type:"warning"
+            });
+            return false;
+        }
+        var inquiryID = getQueryVariable("inquiryID");
+
+        var data = {"suppliers":arr , "inquiryID":inquiryID};
+
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"createBuyOrderByChoose",
+            async:false,
+            traditional:true,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"采购订单已生成",
+                        type:"success"
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    }
+
+    function chooseCheapest() {
+        var type = "1";
+        var inquiryID = getQueryVariable("inquiryID");
+        var data = {"inquiryID":inquiryID , "type":type};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"chooseSolution",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"采购订单已生成",
+                        type:"success"
+                    });
+                    $("#myModal").modal('hide');
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    };
+
+    function chooseFastest() {
+        var type = "2";
+        var inquiryID = getQueryVariable("inquiryID");
+        var data = {"inquiryID":inquiryID , "type":type};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"chooseSolution",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"采购订单已生成",
+                        type:"success"
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    };
+
+    function chooseBest() {
+        var type = "3";
+        var inquiryID = getQueryVariable("inquiryID");
+        var data = {"inquiryID":inquiryID , "type":type};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"chooseSolution",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"采购订单已生成",
+                        type:"success"
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    };
+
+
+
+</script>
+<style type="text/css">
+    .on {
+        width: 70px;
+        height: 20px;
+        display: table-cell;
+        position: relative;
+    }
+
+    .on a {
+        display: block;
+        overflow: hidden;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #5e5e5e;
+    }
+
+    .angle_top {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        border-style: solid;
+        border-width: 0 6px 6px;
+        border-color: transparent transparent #5e5e5e;
+        position: absolute;
+        transform: rotate(180deg);
+        bottom: 6px;
+        right: 0px;
+    }
+
+    .angle_bottom {
+        content: '';
+        width: 0;
+        height: 0;
+        display: block;
+        border-style: solid;
+        border-width: 0 6px 6px;
+        border-color: transparent transparent #5e5e5e;
+        position: absolute;
+        top: -1px;
+        right: 0px;
+    }
+</style>
+</body>
+</html>

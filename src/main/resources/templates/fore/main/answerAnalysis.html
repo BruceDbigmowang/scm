@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<title>询价单查询</title>
+<title>报价分析</title>
 <head th:include="include/module/newHeader::html" ></head>
 <body>
 <div id="workingArea">
     <div th:replace="include/module/top::html" ></div>
     <div th:replace="include/module/leftMenu::html" ></div>
-    <div th:replace="include/inquiry/queryInquiryPage::html" ></div>
+    <div th:replace="include/inquiry/analysisPage::html" ></div>
 </div>
-
 <script>
     //日期选择器
     laydate.render({
@@ -38,7 +37,6 @@
                 var inquirys = data.lists;
                 $("#inquiryTotal").html("");
                 for(var i = 0 ; i < inquirys.length ; i++){
-                    if(inquirys[i].status == "C"){
                         $("#inquiryTotal").append("<tr>"
                             +"<td>"+inquirys[i].inquiryID+"</td>"
                             +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -49,18 +47,6 @@
                             +"<td>"+inquirys[i].inquiryName+"</td>"
                             +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                             +"</tr>");
-                    }else{
-                        $("#inquiryTotal").append("<tr>"
-                            +"<td>"+inquirys[i].inquiryID+"</td>"
-                            +"<td>"+inquirys[i].inquiryDate+"</td>"
-                            +"<td>"+inquirys[i].project+"</td>"
-                            +"<td>"+inquirys[i].inquiryType+"</td>"
-                            +"<td>"+inquirys[i].deadline+"</td>"
-                            +"<td>"+inquirys[i].statusDes+"</td>"
-                            +"<td>"+inquirys[i].inquiryName+"</td>"
-                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                            +"</tr>");
-                    }
 
                 }
 
@@ -91,7 +77,7 @@
                     var inquirys = data.lists;
                     $("#inquiryTotal").html("");
                     for(var i = 0 ; i < inquirys.length ; i++){
-                        if(inquirys[i].status == "C"){
+
                             $("#inquiryTotal").append("<tr>"
                                 +"<td>"+inquirys[i].inquiryID+"</td>"
                                 +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -102,18 +88,6 @@
                                 +"<td>"+inquirys[i].inquiryName+"</td>"
                                 +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                                 +"</tr>");
-                        }else{
-                            $("#inquiryTotal").append("<tr>"
-                                +"<td>"+inquirys[i].inquiryID+"</td>"
-                                +"<td>"+inquirys[i].inquiryDate+"</td>"
-                                +"<td>"+inquirys[i].project+"</td>"
-                                +"<td>"+inquirys[i].inquiryType+"</td>"
-                                +"<td>"+inquirys[i].deadline+"</td>"
-                                +"<td>"+inquirys[i].statusDes+"</td>"
-                                +"<td>"+inquirys[i].inquiryName+"</td>"
-                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                                +"</tr>");
-                        }
                     }
 
                     pages = data.pages;
@@ -154,7 +128,7 @@
                     var inquirys = data.lists;
                     $("#inquiryTotal").html("");
                     for(var i = 0 ; i < inquirys.length ; i++){
-                        if(inquirys[i].status == "C"){
+
                             $("#inquiryTotal").append("<tr>"
                                 +"<td>"+inquirys[i].inquiryID+"</td>"
                                 +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -165,18 +139,6 @@
                                 +"<td>"+inquirys[i].inquiryName+"</td>"
                                 +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                                 +"</tr>");
-                        }else{
-                            $("#inquiryTotal").append("<tr>"
-                                +"<td>"+inquirys[i].inquiryID+"</td>"
-                                +"<td>"+inquirys[i].inquiryDate+"</td>"
-                                +"<td>"+inquirys[i].project+"</td>"
-                                +"<td>"+inquirys[i].inquiryType+"</td>"
-                                +"<td>"+inquirys[i].deadline+"</td>"
-                                +"<td>"+inquirys[i].statusDes+"</td>"
-                                +"<td>"+inquirys[i].inquiryName+"</td>"
-                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                                +"</tr>");
-                        }
 
                     }
 
@@ -207,7 +169,7 @@
                 var inquirys = data.lists;
                 $("#inquiryTotal").html("");
                 for(var i = 0 ; i < inquirys.length ; i++){
-                    if(inquirys[i].status == "C"){
+
                         $("#inquiryTotal").append("<tr>"
                             +"<td>"+inquirys[i].inquiryID+"</td>"
                             +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -218,18 +180,6 @@
                             +"<td>"+inquirys[i].inquiryName+"</td>"
                             +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                             +"</tr>");
-                    }else{
-                        $("#inquiryTotal").append("<tr>"
-                            +"<td>"+inquirys[i].inquiryID+"</td>"
-                            +"<td>"+inquirys[i].inquiryDate+"</td>"
-                            +"<td>"+inquirys[i].project+"</td>"
-                            +"<td>"+inquirys[i].inquiryType+"</td>"
-                            +"<td>"+inquirys[i].deadline+"</td>"
-                            +"<td>"+inquirys[i].statusDes+"</td>"
-                            +"<td>"+inquirys[i].inquiryName+"</td>"
-                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                            +"</tr>");
-                    }
 
                 }
 
@@ -267,7 +217,7 @@
                 var inquirys = data.lists;
                 $("#inquiryTotal").html("");
                 for(var i = 0 ; i < inquirys.length ; i++){
-                    if(inquirys[i].status == "C"){
+
                         $("#inquiryTotal").append("<tr>"
                             +"<td>"+inquirys[i].inquiryID+"</td>"
                             +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -278,18 +228,7 @@
                             +"<td>"+inquirys[i].inquiryName+"</td>"
                             +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                             +"</tr>");
-                    }else{
-                        $("#inquiryTotal").append("<tr>"
-                            +"<td>"+inquirys[i].inquiryID+"</td>"
-                            +"<td>"+inquirys[i].inquiryDate+"</td>"
-                            +"<td>"+inquirys[i].project+"</td>"
-                            +"<td>"+inquirys[i].inquiryType+"</td>"
-                            +"<td>"+inquirys[i].deadline+"</td>"
-                            +"<td>"+inquirys[i].statusDes+"</td>"
-                            +"<td>"+inquirys[i].inquiryName+"</td>"
-                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                            +"</tr>");
-                    }
+
                 }
 
                 pages = data.pages;
@@ -330,7 +269,7 @@
                     var inquirys = data.lists;
                     $("#inquiryTotal").html("");
                     for(var i = 0 ; i < inquirys.length ; i++){
-                        if(inquirys[i].status == "C"){
+
                             $("#inquiryTotal").append("<tr>"
                                 +"<td>"+inquirys[i].inquiryID+"</td>"
                                 +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -341,18 +280,7 @@
                                 +"<td>"+inquirys[i].inquiryName+"</td>"
                                 +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                                 +"</tr>");
-                        }else{
-                            $("#inquiryTotal").append("<tr>"
-                                +"<td>"+inquirys[i].inquiryID+"</td>"
-                                +"<td>"+inquirys[i].inquiryDate+"</td>"
-                                +"<td>"+inquirys[i].project+"</td>"
-                                +"<td>"+inquirys[i].inquiryType+"</td>"
-                                +"<td>"+inquirys[i].deadline+"</td>"
-                                +"<td>"+inquirys[i].statusDes+"</td>"
-                                +"<td>"+inquirys[i].inquiryName+"</td>"
-                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                                +"</tr>");
-                        }
+
                     }
 
                     pages = data.pages;
@@ -394,7 +322,7 @@
                     var inquirys = data.lists;
                     $("#inquiryTotal").html("");
                     for(var i = 0 ; i < inquirys.length ; i++){
-                        if(inquirys[i].status == "C"){
+
                             $("#inquiryTotal").append("<tr>"
                                 +"<td>"+inquirys[i].inquiryID+"</td>"
                                 +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -405,18 +333,6 @@
                                 +"<td>"+inquirys[i].inquiryName+"</td>"
                                 +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                                 +"</tr>");
-                        }else{
-                            $("#inquiryTotal").append("<tr>"
-                                +"<td>"+inquirys[i].inquiryID+"</td>"
-                                +"<td>"+inquirys[i].inquiryDate+"</td>"
-                                +"<td>"+inquirys[i].project+"</td>"
-                                +"<td>"+inquirys[i].inquiryType+"</td>"
-                                +"<td>"+inquirys[i].deadline+"</td>"
-                                +"<td>"+inquirys[i].statusDes+"</td>"
-                                +"<td>"+inquirys[i].inquiryName+"</td>"
-                                +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                                +"</tr>");
-                        }
                     }
 
                     pages = data.pages;
@@ -452,7 +368,7 @@
                 var inquirys = data.lists;
                 $("#inquiryTotal").html("");
                 for(var i = 0 ; i < inquirys.length ; i++){
-                    if(inquirys[i].status == "C"){
+
                         $("#inquiryTotal").append("<tr>"
                             +"<td>"+inquirys[i].inquiryID+"</td>"
                             +"<td>"+inquirys[i].inquiryDate+"</td>"
@@ -463,18 +379,7 @@
                             +"<td>"+inquirys[i].inquiryName+"</td>"
                             +"<td>"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
                             +"</tr>");
-                    }else{
-                        $("#inquiryTotal").append("<tr>"
-                            +"<td>"+inquirys[i].inquiryID+"</td>"
-                            +"<td>"+inquirys[i].inquiryDate+"</td>"
-                            +"<td>"+inquirys[i].project+"</td>"
-                            +"<td>"+inquirys[i].inquiryType+"</td>"
-                            +"<td>"+inquirys[i].deadline+"</td>"
-                            +"<td>"+inquirys[i].statusDes+"</td>"
-                            +"<td>"+inquirys[i].inquiryName+"</td>"
-                            +"<td>"+'<a href="#" onclick="closeInquiryList(this)">关闭询价</a>'+"&nbsp;&nbsp;"+'<a href="#" onclick="toDetailPage(this)">查看详情</a>'+"</td>"
-                            +"</tr>");
-                    }
+
                 }
 
                 pages = data.pages;
@@ -495,35 +400,7 @@
     //跳转至询价单详情页面
     function toDetailPage(obj) {
         var inquiryID = obj.parentNode.parentNode.cells[0].innerText;
-        window.location.href="foreInquiryDetail?inquiryID="+inquiryID;
-    }
-
-    //关闭询价单
-    function closeInquiryList(obj) {
-        var inquiryID = obj.parentNode.parentNode.cells[0].innerText;
-        var result = confirm("是否关闭询价单："+inquiryID+"?");
-        if(result == true){
-            $.ajax({
-                type:"put",
-                data:{"inquiryID":inquiryID},
-                url:"closeInquiry",
-                async:false,
-                success:function (data) {
-                    if(data == "OK"){
-                        $.message({
-                            message:"询价已关闭",
-                            type:"success"
-                        });
-                        getInquiryByCondition();
-                    }else{
-                        $.message({
-                            message:data,
-                            type:"error"
-                        })
-                    }
-                }
-            })
-        }
+        window.location.href="foreAnalysisDetail?inquiryID="+inquiryID;
     }
 
     function restSearch() {
@@ -533,7 +410,8 @@
         $("#inquiryType option:first").prop("selected", 'selected');
         $("#inquiryStatus option:first").prop("selected", 'selected');
     }
-</script>
 
+</script>
 </body>
 </html>
+

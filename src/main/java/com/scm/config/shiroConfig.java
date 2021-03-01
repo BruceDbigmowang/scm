@@ -35,6 +35,12 @@ public class shiroConfig {
         perms.put("/foreInquirySome" , "authc");
         perms.put("/foreInquiryDetail" , "authc");
         perms.put("/foreSupplierInquiry" , "authc");
+        perms.put("/foreAnalysis" , "authc");
+        perms.put("/foreAnalysisDetail" , "authc");
+        perms.put("/foreBuyList" , "authc");
+        perms.put("/foreBuyDetail" , "authc");
+        perms.put("/foreUserCenter" , "authc");
+        perms.put("/foreUserManage" , "authc");
         shiroFilterFactoryBean.setLoginUrl("foreLogin");
         shiroFilterFactoryBean.setUnauthorizedUrl("foreLogin");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(perms);

@@ -112,4 +112,20 @@
         })
     }
 </script>
+<style>
+    #mainContent{
+        overflow:hidden;
+        width:100%;
+    }
+    #materialDiv{
+        width:calc(100% + 15px);/*使滚动条超出当前元素的父元素边界，而父元素设置了overflow为hidden，使溢出内容隐藏，即隐藏了滚动条*/
+        height:400px;
+        padding-right:15px;
+        box-sizing:content-box;/*兼容ie，使盒模型为w3c盒模型*/
+        overflow-y:scroll;/*控制能沿y轴滚动*/
+    }
+    #allMaterial{
+        width:100%;
+    }
+</style>
 </html>

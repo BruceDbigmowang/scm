@@ -94,4 +94,52 @@ public class PageController {
         return "fore/main/supplierInquiry";
     }
 
+    /**
+     * 跳转至报价分析界面中
+     */
+    @RequestMapping("/foreAnalysis")
+    public String toAnalysis(){
+        return "fore/main/answerAnalysis";
+    }
+
+    /**
+     * 跳转至某一询价单 分析界面
+     */
+    @RequestMapping("/foreAnalysisDetail")
+    public String toAnalysisDetail(){
+        return "fore/main/analysisDetail";
+    }
+
+    /**
+     * 跳转至采购单界面
+     */
+    @RequestMapping("/foreBuyList")
+    public String toBuyList(){
+        return "fore/main/buyList";
+    }
+
+    /**
+     * 跳转至采购单详情界面
+     */
+    @RequestMapping("/foreBuyDetail")
+    public String toBuyDetail(){
+        return "fore/main/buyDetail";
+    }
+
+    /**
+     * 跳转至修改账号界面
+     */
+    @RequestMapping("/foreUserCenter")
+    public String toUserCenter(){
+        return "fore/main/userCenter";
+    }
+
+    /**
+     * 跳转至账号管理界面
+     */
+    @RequestMapping("/foreUserManage")
+    public String toUserManage(){
+        return "fore/main/userManage";
+    }
+
 }

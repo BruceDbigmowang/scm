@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>账号管理</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/index/userManagePage::html" ></div>
+</div>
+<script>
+    var start = 0;
+    var pages = 0;
+
+    $(function () {
+        loadAllUser();
+        showAllRole();
+    });
+
+    // 分页显示用户的所有数据
+
+    function loadAllUser() {
+        start = 0;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findAllUser",
+            async:false,
+            success:function (data) {
+                var users = data.users;
+                $("#accountList").html("");
+                for(var i = 0 ; i < users.length ; i++){
+                    if(users[i].status == "正常"){
+                        $("#accountList").append("<tr>"
+                            +"<td>"+users[i].account+"</td>"
+                            +"<td>"+users[i].name+"</td>"
+                            +"<td>"+users[i].phone+"</td>"
+                            +"<td>"+users[i].email+"</td>"
+                            +"<td>"+users[i].status+"</td>"
+                            +"<td>"+'<a href="#" onclick="setAccountDrop(this)">禁用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#accountList").append("<tr>"
+                            +"<td>"+users[i].account+"</td>"
+                            +"<td>"+users[i].name+"</td>"
+                            +"<td>"+users[i].phone+"</td>"
+                            +"<td>"+users[i].email+"</td>"
+                            +"<td>"+users[i].status+"</td>"
+                            +"<td>"+'<a href="#" onclick="setAccountUse(this)">启用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                            +"</tr>");
+                    }
+
+                }
+                pages = data.pages;
+                var num = start + 1;
+                $("#pageDiv").html("");
+                $("#pageDiv").append('<a href="#" onclick="loadAllUser()">'+"首页"+"</a>"+
+                    '<a href="#" onclick="loadUserPrevious()" style="margin-left: 10px;">'+"上一页"+"</a>"+
+                    '<a href="#" onclick="loadUserNext()" style="margin-left: 10px;">'+"下一页"+"</a>"+
+                    '<a href="#" onclick="loadUserLast()" style="margin-left: 10px;">'+"尾页"+"</a>"+'<span style="margin-left: 20px;">'+"第"+num+"页/共"+pages+"页"+"</span>"
+                )
+            }
+        })
+    }
+
+    function loadUserPrevious() {
+        if(start > 0){
+            start = start - 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findAllUser",
+                async:false,
+                success:function (data) {
+                    var users = data.users;
+                    $("#accountList").html("");
+                    for(var i = 0 ; i < users.length ; i++){
+                        if(users[i].status == "正常"){
+                            $("#accountList").append("<tr>"
+                                +"<td>"+users[i].account+"</td>"
+                                +"<td>"+users[i].name+"</td>"
+                                +"<td>"+users[i].phone+"</td>"
+                                +"<td>"+users[i].email+"</td>"
+                                +"<td>"+users[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountDrop(this)">禁用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#accountList").append("<tr>"
+                                +"<td>"+users[i].account+"</td>"
+                                +"<td>"+users[i].name+"</td>"
+                                +"<td>"+users[i].phone+"</td>"
+                                +"<td>"+users[i].email+"</td>"
+                                +"<td>"+users[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountUse(this)">启用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+                    pages = data.pages;
+                    var num = start + 1;
+                    $("#pageDiv").html("");
+                    $("#pageDiv").append('<a href="#" onclick="loadAllUser()">'+"首页"+"</a>"+
+                        '<a href="#" onclick="loadUserPrevious()" style="margin-left: 10px;">'+"上一页"+"</a>"+
+                        '<a href="#" onclick="loadUserNext()" style="margin-left: 10px;">'+"下一页"+"</a>"+
+                        '<a href="#" onclick="loadUserLast()" style="margin-left: 10px;">'+"尾页"+"</a>"+'<span style="margin-left: 20px;">'+"第"+num+"页/共"+pages+"页"+"</span>"
+                    )
+                }
+            })
+        }else{
+            $.message({
+                message:"已是第一页",
+                type:"warning"
+            });
+        }
+    }
+
+    function loadUserNext() {
+        if(start < pages - 1){
+            start = start + 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findAllUser",
+                async:false,
+                success:function (data) {
+                    var users = data.users;
+                    $("#accountList").html("");
+                    for(var i = 0 ; i < users.length ; i++){
+                        if(users[i].status == "正常"){
+                            $("#accountList").append("<tr>"
+                                +"<td>"+users[i].account+"</td>"
+                                +"<td>"+users[i].name+"</td>"
+                                +"<td>"+users[i].phone+"</td>"
+                                +"<td>"+users[i].email+"</td>"
+                                +"<td>"+users[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountDrop(this)">禁用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#accountList").append("<tr>"
+                                +"<td>"+users[i].account+"</td>"
+                                +"<td>"+users[i].name+"</td>"
+                                +"<td>"+users[i].phone+"</td>"
+                                +"<td>"+users[i].email+"</td>"
+                                +"<td>"+users[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountUse(this)">启用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+                    pages = data.pages;
+                    var num = start + 1;
+                    $("#pageDiv").html("");
+                    $("#pageDiv").append('<a href="#" onclick="loadAllUser()">'+"首页"+"</a>"+
+                        '<a href="#" onclick="loadUserPrevious()" style="margin-left: 10px;">'+"上一页"+"</a>"+
+                        '<a href="#" onclick="loadUserNext()" style="margin-left: 10px;">'+"下一页"+"</a>"+
+                        '<a href="#" onclick="loadUserLast()" style="margin-left: 10px;">'+"尾页"+"</a>"+'<span style="margin-left: 20px;">'+"第"+num+"页/共"+pages+"页"+"</span>"
+                    )
+                }
+            })
+        }else{
+            $.message({
+                message:"已是最后一页",
+                type:"warning"
+            });
+        }
+    }
+
+    function loadUserLast() {
+        start = pages - 1;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findAllUser",
+            async:false,
+            success:function (data) {
+                var users = data.users;
+                $("#accountList").html("");
+                for(var i = 0 ; i < users.length ; i++){
+                    if(users[i].status == "正常"){
+                        $("#accountList").append("<tr>"
+                            +"<td>"+users[i].account+"</td>"
+                            +"<td>"+users[i].name+"</td>"
+                            +"<td>"+users[i].phone+"</td>"
+                            +"<td>"+users[i].email+"</td>"
+                            +"<td>"+users[i].status+"</td>"
+                            +"<td>"+'<a href="#" onclick="setAccountDrop(this)">禁用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#accountList").append("<tr>"
+                            +"<td>"+users[i].account+"</td>"
+                            +"<td>"+users[i].name+"</td>"
+                            +"<td>"+users[i].phone+"</td>"
+                            +"<td>"+users[i].email+"</td>"
+                            +"<td>"+users[i].status+"</td>"
+                            +"<td>"+'<a href="#" onclick="setAccountUse(this)">启用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                            +"</tr>");
+                    }
+                }
+                pages = data.pages;
+                var num = start + 1;
+                $("#pageDiv").html("");
+                $("#pageDiv").append('<a href="#" onclick="loadAllUser()">'+"首页"+"</a>"+
+                    '<a href="#" onclick="loadUserPrevious()" style="margin-left: 10px;">'+"上一页"+"</a>"+
+                    '<a href="#" onclick="loadUserNext()" style="margin-left: 10px;">'+"下一页"+"</a>"+
+                    '<a href="#" onclick="loadUserLast()" style="margin-left: 10px;">'+"尾页"+"</a>"+'<span style="margin-left: 20px;">'+"第"+num+"页/共"+pages+"页"+"</span>"
+                )
+            }
+        })
+    }
+
+    //禁用账号
+    function setAccountDrop(obj) {
+        var status = "N";
+        var account = obj.parentNode.parentNode.cells[0].innerText;
+        $.ajax({
+            type:"put",
+            data:{"account":account , "status":status},
+            url:"changeAccountStatus",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"账号已禁用",
+                        type:"success"
+                    });
+                    loadAllUser();
+                }
+            }
+        })
+    }
+
+    //启用账号
+    function setAccountUse(obj) {
+        function setAccountDrop(obj) {
+            var status = "Y";
+            var account = obj.parentNode.parentNode.cells[0].innerText;
+            $.ajax({
+                type:"put",
+                data:{"account":account , "status":status},
+                url:"changeAccountStatus",
+                async:false,
+                success:function (data) {
+                    if(data == "OK"){
+                        $.message({
+                            message:"账号已禁用",
+                            type:"success"
+                        });
+                        loadAllUser();
+                    }
+                }
+            })
+        }
+    }
+
+    // 重置密码
+    function restAccountPassword(obj) {
+        var account = obj.parentNode.parentNode.cells[0].innerText;
+        $.ajax({
+            type:"put",
+            data:{"account":account},
+            url:"restPassword",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"密码重置成功",
+                        type:"success"
+                    });
+                    loadAllUser();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"success"
+                    });
+                }
+            }
+        })
+    }
+
+    //根据条件去查询账号信息
+    function searchAccountByCondition() {
+        var search = $("#search").val();
+        if(search == ""){
+            loadAllUser();
+        }else{
+            $.ajax({
+                type:"get",
+                data:{"search":search},
+                url:"findUserByCondition",
+                async:false,
+                success:function (data) {
+                    $("#accountList").html("");
+                    $("#pageDiv").html("");
+                    for(var i = 0 ; i < data.length ; i++){
+                        if(data[i].status == "正常"){
+                            $("#accountList").append("<tr>"
+                                +"<td>"+data[i].account+"</td>"
+                                +"<td>"+data[i].name+"</td>"
+                                +"<td>"+data[i].phone+"</td>"
+                                +"<td>"+data[i].email+"</td>"
+                                +"<td>"+data[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountDrop(this)">禁用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#accountList").append("<tr>"
+                                +"<td>"+data[i].account+"</td>"
+                                +"<td>"+data[i].name+"</td>"
+                                +"<td>"+data[i].phone+"</td>"
+                                +"<td>"+data[i].email+"</td>"
+                                +"<td>"+data[i].status+"</td>"
+                                +"<td>"+'<a href="#" onclick="setAccountUse(this)">启用</a>'+'<a href="#" style="margin-left: 10px;" onclick="restAccountPassword(this)">重置密码</a>'+"</td>"
+                                +"</tr>");
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    function showAllRole() {
+        $.ajax({
+            type:"get",
+            url:"selectAllRole",
+            async:false,
+            success:function (data) {
+                $("#role").html("");
+                $("#role").append('<option value="0">--请选择--</option>');
+                for(var i = 0 ; i < data.length ; i++){
+                    $("#role").append('<option value="'+data[i].roleId+'">'+data[i].roleName+"</option>");
+                }
+            }
+        })
+    }
+
+    function createAccount() {
+        var account = $("#account").val();
+        if(account == ""){
+            $.message({
+                messgae:"请输入新建的账号",
+                type:"error"
+            });
+            return false;
+        }
+        var name = $("#name").val();
+        if(name == ""){
+            $.message({
+                messgae:"请输入新建账号的名称",
+                type:"error"
+            });
+            return false;
+        }
+        var phone = $("#phone").val();
+        if(phone != ""){
+            if(phone.length !== 11){
+                $.message({
+                    message:"请完整填写手机号",
+                    type:"error"
+                });
+                return false;
+            }
+            var isnum = /^\d+$/.test(phone);
+            if(isnum == false){
+                $.message({
+                    message:"手机号只能输入数字",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var email = $("#email").val();
+        if(email != ""){
+            var re=/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+            if (re.test(email) != true){
+                $.message({
+                    message:"邮箱地址输入错误",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var role = $("#role option:selected").val();
+        if(role == "0"){
+            $.message({
+                message:"请选择账号角色",
+                type:"error"
+            });
+        }
+        var data = {"account":account , "name":name , "phone":phone , "email":email , "roleId":role};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"addAccount",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"账号已添加",
+                        type:"success"
+                    });
+                    loadAllUser();
+                    $("#myModal").modal('hide');
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

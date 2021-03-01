@@ -4,175 +4,151 @@
     <!-- START CONTAINER -->
     <div id="mainContent" class="container-widget">
         <input id="importantCode" type="hidden">
-        <div class="row" style="background-color: white;">
-            <div>
-                <table border="1" cellspacing="0" cellpadding="0" style="width: 100%;">
-                    <tr>
-                        <td>
-                            <table class="table">
-                                <tr>
-                                    <td>
-                                        <h3>供应商详情</h3>
-                                    </td>
-                                    <td id="operateTd" style="text-align: right;vertical-align: bottom;font-size: 16px;">
-                                        <a href="#" onclick="clickWrite()">编辑</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 15px">
-                                <caption><h5>基础信息</h5></caption>
-                                <tr>
-                                    <td>供应商名称</td>
-                                    <td><input id="supplierName" class="form-control" readonly></td>
-                                    <td>供应商简称</td>
-                                    <td><input id="simpleName" class="form-control" readonly></td>
-                                    <td>供应商代码</td>
-                                    <td><input id="supplierCode" class="form-control" readonly></td>
-                                    <td>供应商性质</td>
-                                    <td><input id="supplierNature" class="form-control" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td>供应类别</td>
-                                    <td><input id="supplyType" class="form-control" readonly></td>
-                                    <td>供应商关系</td>
-                                    <td><input id="relationship" class="form-control" readonly></td>
-                                    <td>所在地区</td>
-                                    <td><input id="area" class="form-control" readonly></td>
-                                    <td>公司网址</td>
-                                    <td><input id="website" class="form-control" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td>通讯地址</td>
-                                    <td colspan="3"><input id="postAddress" class="form-control" readonly></td>
-                                    <td>详细地址</td>
-                                    <td colspan="3"><input id="addressDetail" class="form-control" readonly></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 15px;">
-                                <caption><p style="display: inline-block;font-size: 20px;color: black;">联系人信息</p><button style="margin-left: 78%" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加联系人</button></caption>
-                                <tbody id="contactBody" >
-                                <tr>
-                                    <td>市场/商务</td>
-                                    <td>张三丰</td>
-                                    <td>状态</td>
-                                    <td>正常</td>
-                                    <td>服务评分</td>
-                                    <td>5.0</td>
-                                    <td><button class="btn btn-sm">指定为商务对接人</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="display: none;">编号</td>
-                                    <td>技术</td>
-                                    <td>张三丰</td>
-                                    <td>状态</td>
-                                    <td>正常</td>
-                                    <td>服务评分</td>
-                                    <td>5.0</td>
-                                    <td><button class="btn btn-sm">指定为技术对接人</button></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 15px;">
-                                <caption><h5>认证信息</h5></caption>
-                                <tbody id="authBody">
-                                <tr>
-                                    <td>认证状态</td>
-                                    <td>已认证</td>
-                                    <td>成立时间</td>
-                                    <td>2021/01/01</td>
-                                    <td>法人代表</td>
-                                    <td>王五</td>
-                                    <td>注册资金</td>
-                                    <td>5000万</td>
-                                    <td>统一社会信用代码</td>
-                                    <td>000000</td>
-                                    <td>注册地址</td>
-                                    <td>xxxx</td>
-                                </tr>
-                                <tr>
-                                    <td>营业执照</td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 16px;">
-                                <caption><p style="display: inline-block;font-size: 20px;color: black;">标签</p><button style="margin-left: 83%" class="btn btn-primary" data-toggle="modal" data-target="#myModal4" onclick="getSupplierForLabel()">添加标签</button></caption>                                <tbody>
-                                <tbody>
-                                    <tr>
-                                        <td id="labelTd">没有数据</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-
-                            <table class="table" style="font-size: 15px;">
-                                <caption><p style="display: inline-block;font-size: 20px;color: black;">物料信息</p><button style="margin-left: 80%" class="btn btn-primary" data-toggle="modal" data-target="#myModal5" onclick="getSupplierForMaterial()">导入物料</button></caption>
-                                <thead style="font-size: 15px;">
-                                <tr>
-                                    <th>产品名称</th>
-                                    <th>型号/规格</th>
-                                    <th>供应商编码</th>
-                                    <th>K编码</th>
-                                    <th>标准单价</th>
-                                    <th>最近采购单价</th>
-                                    <th>标准交货期</th>
-                                    <th>最近采购交货期</th>
-                                </tr>
-                                </thead>
-                                <tbody id="materialBody" style="font-size: 15px;"></tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 15px;">
-                                <caption><h5>财务信息</h5></caption>
-                                <tbody>
-                                <tr>
-                                    <td>没有数据</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table class="table" style="font-size: 16px;">
-                                <caption><h5>其它信息</h5></caption>
-                                <tbody>
-                                <tr>
-                                    <td>没有数据</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-
-
-            </div>
+        <div class="row presentation">
+            <table class="table">
+                <tr>
+                    <td>
+                        <h3>供应商详情</h3>
+                    </td>
+                    <td id="operateTd" style="text-align: right;vertical-align: bottom;font-size: 16px;">
+                        <a href="#" onclick="clickWrite()">编辑</a>
+                    </td>
+                </tr>
+            </table>
         </div>
-
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 15px">
+                <caption><h5>基础信息</h5></caption>
+                <tr>
+                    <td>供应商名称</td>
+                    <td><input id="supplierName" class="form-control" readonly></td>
+                    <td>供应商简称</td>
+                    <td><input id="simpleName" class="form-control" readonly></td>
+                    <td>供应商代码</td>
+                    <td><input id="supplierCode" class="form-control" readonly></td>
+                    <td>供应商性质</td>
+                    <td><input id="supplierNature" class="form-control" readonly></td>
+                </tr>
+                <tr>
+                    <td>供应类别</td>
+                    <td><input id="supplyType" class="form-control" readonly></td>
+                    <td>供应商关系</td>
+                    <td><input id="relationship" class="form-control" readonly></td>
+                    <td>所在地区</td>
+                    <td><input id="area" class="form-control" readonly></td>
+                    <td>公司网址</td>
+                    <td><input id="website" class="form-control" readonly></td>
+                </tr>
+                <tr>
+                    <td>通讯地址</td>
+                    <td colspan="3"><input id="postAddress" class="form-control" readonly></td>
+                    <td>详细地址</td>
+                    <td colspan="3"><input id="addressDetail" class="form-control" readonly></td>
+                </tr>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 15px;">
+                <caption><p style="display: inline-block;font-size: 20px;color: black;">联系人信息</p><button style="margin-left: 78%" class="btn btn-primary" data-toggle="modal" data-target="#myModal">添加联系人</button></caption>
+                <tbody id="contactBody" >
+                <tr>
+                    <td>市场/商务</td>
+                    <td>张三丰</td>
+                    <td>状态</td>
+                    <td>正常</td>
+                    <td>服务评分</td>
+                    <td>5.0</td>
+                    <td><button class="btn btn-sm">指定为商务对接人</button></td>
+                </tr>
+                <tr>
+                    <td style="display: none;">编号</td>
+                    <td>技术</td>
+                    <td>张三丰</td>
+                    <td>状态</td>
+                    <td>正常</td>
+                    <td>服务评分</td>
+                    <td>5.0</td>
+                    <td><button class="btn btn-sm">指定为技术对接人</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 15px;">
+                <caption><h5>认证信息</h5></caption>
+                <tbody id="authBody">
+                <tr>
+                    <td>认证状态</td>
+                    <td>已认证</td>
+                    <td>成立时间</td>
+                    <td>2021/01/01</td>
+                    <td>法人代表</td>
+                    <td>王五</td>
+                    <td>注册资金</td>
+                    <td>5000万</td>
+                    <td>统一社会信用代码</td>
+                    <td>000000</td>
+                    <td>注册地址</td>
+                    <td>xxxx</td>
+                </tr>
+                <tr>
+                    <td>营业执照</td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 16px;">
+                <caption><p style="display: inline-block;font-size: 20px;color: black;">标签</p><button style="margin-left: 83%" class="btn btn-primary" data-toggle="modal" data-target="#myModal4" onclick="getSupplierForLabel()">添加标签</button></caption>                                <tbody>
+                <tbody>
+                <tr>
+                    <td id="labelTd">没有数据</td>
+                </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 15px;">
+                <caption><p style="display: inline-block;font-size: 20px;color: black;">物料信息</p><button style="margin-left: 80%" class="btn btn-primary" data-toggle="modal" data-target="#myModal5" onclick="getSupplierForMaterial()">导入物料</button></caption>
+                <thead style="font-size: 15px;">
+                <tr>
+                    <th>产品名称</th>
+                    <th>型号/规格</th>
+                    <th>供应商编码</th>
+                    <th>K编码</th>
+                    <th>标准单价</th>
+                    <th>最近采购单价</th>
+                    <th>标准交货期</th>
+                    <th>最近采购交货期</th>
+                </tr>
+                </thead>
+                <tbody id="materialBody" style="font-size: 15px;"></tbody>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 15px;">
+                <caption><h5>财务信息</h5></caption>
+                <tbody>
+                <tr>
+                    <td>没有数据</td>
+                </tr>
+                </tbody>
+            </table>
+        </div><br>
+        <div class="row" style="background-color: white;">
+            <table class="table" style="font-size: 16px;">
+                <caption><h5>其它信息</h5></caption>
+                <tbody>
+                <tr>
+                    <td>没有数据</td>
+                </tr>
+                </tbody>
+            </table>
+        </div><br>
     </div>
+
+
 
 <!--    //************************************-->
 <!--    //**********模态框********************-->

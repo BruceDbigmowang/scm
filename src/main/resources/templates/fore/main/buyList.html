@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>采购申请单</title>
+<head th:include="include/module/newHeader::html" ></head>
+<body>
+<div id="workingArea">
+    <div th:replace="include/module/top::html" ></div>
+    <div th:replace="include/module/leftMenu::html" ></div>
+    <div th:replace="include/buy/buyListPage::html" ></div>
+</div>
+<script>
+    var start = 0 ;
+    var pageSize = 0;
+
+    $(function () {
+        loadFirst();
+    })
+
+    function loadFirst() {
+        start = 0;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findBuySumByPage",
+            async:false,
+            success:function (data) {
+                $("#result").html("");
+                $("#sumList").html("");
+                var sumList = data.sumList;
+                for(var i = 0 ; i < sumList.length ; i++){
+                    if(sumList[i].orderStatus == "O"){
+                        $("#sumList").append("<tr>"
+                            +"<td>"+'<input name="chooseOne" type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                            +"<td>"+sumList[i].id+"</td>"
+                            +"<td>"+sumList[i].inquiryID+"</td>"
+                            +"<td>"+sumList[i].createDate+"</td>"
+                            +"<td>"+sumList[i].project+"</td>"
+                            +"<td>"+sumList[i].buyType+"</td>"
+                            +"<td>"+sumList[i].buyMoney+"</td>"
+                            +"<td>"+sumList[i].operatorName+"</td>"
+                            +"<td>"+sumList[i].statusDesc+"</td>"
+                            +"<td>"+"<a href='#' onclick='closeOrder(this)'>关闭</a>"+'<a href="#" style="margin-left: 10px;" onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#sumList").append("<tr>"
+                            +"<td>"+'<input type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                            +"<td>"+sumList[i].id+"</td>"
+                            +"<td>"+sumList[i].inquiryID+"</td>"
+                            +"<td>"+sumList[i].createDate+"</td>"
+                            +"<td>"+sumList[i].project+"</td>"
+                            +"<td>"+sumList[i].buyType+"</td>"
+                            +"<td>"+sumList[i].buyMoney+"</td>"
+                            +"<td>"+sumList[i].operatorName+"</td>"
+                            +"<td>"+sumList[i].statusDesc+"</td>"
+                            +"<td>"+'<a href="#"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+
+                }
+                $("#pageDIV").html("");
+                var num = start + 1;
+                pageSize = data.pages;
+                $("#pageDIV").append('<a href="#" onclick="loadFirst()">'+"首页"+"</a>"+
+                    '<a href="#" onclick="loadPrevious()" style="margin-left: 20px;">'+"上一页"+"</a>"+
+                    '<a href="#" onclick="loadNext()" style="margin-left: 20px;">'+"下一页"+"</a>"+
+                    '<a href="#" onclick="loadLast()" style="margin-left: 20px;">'+"尾页"+"</a>"+'<span style="margin-left: 40px">'+num+"/"+pageSize+"页"+'</span>')
+            }
+        })
+    }
+
+    function loadPrevious() {
+        if(start == 0){
+            $.message({
+                message:"已是第一页",
+                type:"warning"
+            })
+        }else{
+            start = start - 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findBuySumByPage",
+                async:false,
+                success:function (data) {
+                    $("#result").html("");
+                    $("#sumList").html("");
+                    var sumList = data.sumList;
+                    for(var i = 0 ; i < sumList.length ; i++){
+                        if(sumList[i].orderStatus == "O"){
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input name="chooseOne" type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+"<a href='#' onclick='closeOrder(this)'>关闭</a>"+'<a href="#" style="margin-left: 10px;"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+'<a href="#"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+
+                    }
+                    $("#pageDIV").html("");
+                    var num = start + 1;
+                    pageSize = data.pages;
+                    $("#pageDIV").append('<a href="#" onclick="loadFirst()">'+"首页"+"</a>"+
+                        '<a href="#" onclick="loadPrevious()" style="margin-left: 20px;">'+"上一页"+"</a>"+
+                        '<a href="#" onclick="loadNext()" style="margin-left: 20px;">'+"下一页"+"</a>"+
+                        '<a href="#" onclick="loadLast()" style="margin-left: 20px;">'+"尾页"+"</a>"+'<span style="margin-left: 40px">'+num+"/"+pageSize+"页"+'</span>')
+                }
+            })
+        }
+    }
+
+    function loadNext() {
+        if(start == pageSize - 1){
+            $.message({
+                message:"已是最后一页",
+                type:"warning"
+            })
+        }else{
+            start = start + 1;
+            $.ajax({
+                type:"get",
+                data:{"start":start},
+                url:"findBuySumByPage",
+                async:false,
+                success:function (data) {
+                    $("#result").html("");
+                    $("#sumList").html("");
+                    var sumList = data.sumList;
+                    for(var i = 0 ; i < sumList.length ; i++){
+                        if(sumList[i].orderStatus == "O"){
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input name="chooseOne" type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+"<a href='#' onclick='closeOrder(this)'>关闭</a>"+'<a href="#" style="margin-left: 10px;"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+'<a href="#"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+
+                    }
+                    $("#pageDIV").html("");
+                    var num = start + 1;
+                    pageSize = data.pages;
+                    $("#pageDIV").append('<a href="#" onclick="loadFirst()">'+"首页"+"</a>"+
+                        '<a href="#" onclick="loadPrevious()" style="margin-left: 20px;">'+"上一页"+"</a>"+
+                        '<a href="#" onclick="loadNext()" style="margin-left: 20px;">'+"下一页"+"</a>"+
+                        '<a href="#" onclick="loadLast()" style="margin-left: 20px;">'+"尾页"+"</a>"+'<span style="margin-left: 40px">'+num+"/"+pageSize+"页"+'</span>')
+                }
+            })
+        }
+    }
+
+    function loadLast() {
+        start = pageSize - 1;
+        $.ajax({
+            type:"get",
+            data:{"start":start},
+            url:"findBuySumByPage",
+            async:false,
+            success:function (data) {
+                $("#result").html("");
+                $("#sumList").html("");
+                var sumList = data.sumList;
+                for(var i = 0 ; i < sumList.length ; i++){
+                    if(sumList[i].orderStatus == "O"){
+                        $("#sumList").append("<tr>"
+                            +"<td>"+'<input name="chooseOne" type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                            +"<td>"+sumList[i].id+"</td>"
+                            +"<td>"+sumList[i].inquiryID+"</td>"
+                            +"<td>"+sumList[i].createDate+"</td>"
+                            +"<td>"+sumList[i].project+"</td>"
+                            +"<td>"+sumList[i].buyType+"</td>"
+                            +"<td>"+sumList[i].buyMoney+"</td>"
+                            +"<td>"+sumList[i].operatorName+"</td>"
+                            +"<td>"+sumList[i].statusDesc+"</td>"
+                            +"<td>"+"<a href='#' onclick='closeOrder(this)'>关闭</a>"+'<a href="#" style="margin-left: 10px;" onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }else{
+                        $("#sumList").append("<tr>"
+                            +"<td>"+'<input type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                            +"<td>"+sumList[i].id+"</td>"
+                            +"<td>"+sumList[i].inquiryID+"</td>"
+                            +"<td>"+sumList[i].createDate+"</td>"
+                            +"<td>"+sumList[i].project+"</td>"
+                            +"<td>"+sumList[i].buyType+"</td>"
+                            +"<td>"+sumList[i].buyMoney+"</td>"
+                            +"<td>"+sumList[i].operatorName+"</td>"
+                            +"<td>"+sumList[i].statusDesc+"</td>"
+                            +"<td>"+'<a href="#"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                            +"</tr>");
+                    }
+
+                }
+                $("#pageDIV").html("");
+                var num = start + 1;
+                pageSize = data.pages;
+                $("#pageDIV").append('<a href="#" onclick="loadFirst()">'+"首页"+"</a>"+
+                    '<a href="#" onclick="loadPrevious()" style="margin-left: 20px;">'+"上一页"+"</a>"+
+                    '<a href="#" onclick="loadNext()" style="margin-left: 20px;">'+"下一页"+"</a>"+
+                    '<a href="#" onclick="loadLast()" style="margin-left: 20px;">'+"尾页"+"</a>"+'<span style="margin-left: 40px">'+num+"/"+pageSize+"页"+'</span>')
+            }
+        })
+    }
+
+    function findAllByCondition() {
+        var search = $("#search").val();
+        var project = $("#project").val();
+        var buyType = $("#buyType option:selected").val();
+        var orderStatus = $("#orderStatus option:selected").val();
+        if(search == "" && project == "" && buyType == "" && orderStatus == ""){
+            loadFirst();
+        }else{
+            var data = {"search":search , "project":project , "buyType":buyType , "orderStatus":orderStatus};
+            $.ajax({
+                type:"get",
+                data:data,
+                url:"findBuySumByCondition",
+                async:false,
+                success:function (data) {
+                    $("#result").html("");
+                    var result = data.result;
+                    $("#result").append(result);
+                    $("#pageDIV").html("");
+                    $("#sumList").html("");
+                    var sumList = data.sumList;
+                    for(var i = 0 ; i < sumList.length ; i++){
+                        if(sumList[i].orderStatus == "O"){
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input name="chooseOne" type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+"<a href='#' onclick='closeOrder(this)'>关闭</a>"+'<a href="#" style="margin-left: 10px;"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }else{
+                            $("#sumList").append("<tr>"
+                                +"<td>"+'<input type="checkbox" value="'+sumList[i].id+'">'+"</td>"
+                                +"<td>"+sumList[i].id+"</td>"
+                                +"<td>"+sumList[i].inquiryID+"</td>"
+                                +"<td>"+sumList[i].createDate+"</td>"
+                                +"<td>"+sumList[i].project+"</td>"
+                                +"<td>"+sumList[i].buyType+"</td>"
+                                +"<td>"+sumList[i].buyMoney+"</td>"
+                                +"<td>"+sumList[i].operatorName+"</td>"
+                                +"<td>"+sumList[i].statusDesc+"</td>"
+                                +"<td>"+'<a href="#"  onclick="showDetailInfo(this)">查看详情</a>'+"</td>"
+                                +"</tr>");
+                        }
+
+                    }
+                }
+            })
+        }
+    }
+
+    function setAllNo(){
+        var box = document.getElementById("chooseAll");
+        var loves = document.getElementsByName("chooseOne");
+        if(box.checked == false){
+            for (var i = 0; i < loves.length; i++) {
+                loves[i].checked = false;
+            }
+        }else{
+            for (var i = 0; i < loves.length; i++) {
+                loves[i].checked = true;
+            }
+        }
+    }
+
+    function closeOrder(obj) {
+        var buyID = obj.parentNode.parentNode.cells[1].innerText;
+        $.ajax({
+            type:"put",
+            data:{"buyID":buyID},
+            url:"closeBuyOrder",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"订单已关闭",
+                        type:"success"
+                    });
+                    loadFirst();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+
+        })
+    }
+
+    function showDetailInfo(obj) {
+        var buyID = obj.parentNode.parentNode.cells[1].innerText;
+        window.location.href="foreBuyDetail?buyID="+buyID;
+    }
+</script>
+</body>
+</html>

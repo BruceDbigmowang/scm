@@ -12,4 +12,9 @@ public interface InquirySupplierDAO extends JpaRepository<InquirySupplier , PKIn
      */
     List<InquirySupplier> findById(String id);
 
+    /**
+     * 根据询价单单号以及报价状态 来查询已报价供应商
+     */
+    List<InquirySupplier> findByIdAndAndStatus(String id , String status);
+
 }

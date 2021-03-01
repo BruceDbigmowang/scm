@@ -988,7 +988,7 @@ Presentation
 .presentation {
   background: rgba(0, 0, 0, 0.05);
   margin: -20px -30px 30px -30px;
-  padding: 70px 50px;
+  padding: 20px 10px;
 }
 .presentation .titles .icon {
   color: #fff;

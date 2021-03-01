@@ -1,5 +1,8 @@
 package com.scm.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.qcloudsms.SmsSingleSenderResult;
+import com.scm.config.SmsConfig;
 import com.scm.dao.*;
 import com.scm.entity.InquiryDTO;
 import com.scm.pojo.*;
@@ -18,13 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class InquiryService {
@@ -38,6 +39,8 @@ public class InquiryService {
     InquirySupplierDAO isDao;
     @Autowired
     SupplierDAO supplierDAO;
+    @Autowired
+    InquiryAnswerDAO answerDAO;
 
     /**
      * 根据物料名称获取所有的规格型号
@@ -155,6 +158,249 @@ public class InquiryService {
         map.put("result" , result);
         return map;
     }
+
+    /**
+     * 用于显示报价分析
+     * 相较于 询价详情，多了一些信息  包括
+     * 1、已报价供应商数量
+     * 2、询价的物品数量
+     * 3、供应商报价明细
+     */
+    public Map<String , Object> getInquiryDetailForAnalysis(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        InquiryList inquiryList = listDAO.findById(inquiryID).get();
+        //询价单总汇信息
+        map.put("sum" , inquiryList);
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+        //询价单明细
+        map.put("details" , detailList);
+        List<InquirySupplier> isList = isDao.findById(inquiryID);
+        int no = 0;
+        for(int i = 0 ; i < isList.size() ; i++){
+            InquirySupplier is = isList.get(i);
+            if(is.getStatus().equals("C")){
+                no = no + 1;
+            }
+        }
+        String result = "供应商报价状态（"+no+"/"+isList.size()+"）";
+        //供应商信息
+        map.put("suppliers" , isList);
+        //供应商报价信息
+        map.put("result" , result);
+        //已报价供应商数量
+        map.put("completeNo",no);
+        //询价单中物品的数量
+        map.put("num" , detailList.size());
+        List<InquiryAnswer> answerList = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answers = answerDAO.findByInquiryIDAndDid(detail.getInquiryID() , detail.getId());
+            for(int j = 0 ; j < answers.size() ; j++){
+                InquiryAnswer answer = answers.get(j);
+                if(answerList.contains(answer)){
+                    continue;
+                }else{
+                    answerList.add(answer);
+                }
+            }
+        }
+        //供应商报价明细  根据询价单中询价物品来排序
+        map.put("answerList" , answerList);
+        return map;
+    }
+
+    /**
+     * 按照含税价格排序（降序）
+     * @param inquiryID
+     * @return
+     */
+    public Map<String , Object> getInquiryDetailForAnalysisPriceDesc(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        InquiryList inquiryList = listDAO.findById(inquiryID).get();
+        //询价单总汇信息
+        map.put("sum" , inquiryList);
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+        //询价单明细
+        map.put("details" , detailList);
+        List<InquirySupplier> isList = isDao.findById(inquiryID);
+        int no = 0;
+        for(int i = 0 ; i < isList.size() ; i++){
+            InquirySupplier is = isList.get(i);
+            if(is.getStatus().equals("C")){
+                no = no + 1;
+            }
+        }
+        String result = "供应商报价状态（"+no+"/"+isList.size()+"）";
+        //供应商信息
+        map.put("suppliers" , isList);
+        //供应商报价信息
+        map.put("result" , result);
+        //已报价供应商数量
+        map.put("completeNo",no);
+        //询价单中物品的数量
+        map.put("num" , detailList.size());
+        List<InquiryAnswer> answerList = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answers = answerDAO.findByInquiryIDAndDidOrderByAgreePriceDesc(detail.getInquiryID() , detail.getId());
+            for(int j = 0 ; j < answers.size() ; j++){
+                InquiryAnswer answer = answers.get(j);
+                if(answerList.contains(answer)){
+                    continue;
+                }else{
+                    answerList.add(answer);
+                }
+            }
+        }
+        //供应商报价明细  根据询价单中询价物品来排序
+        map.put("answerList" , answerList);
+        return map;
+    }
+
+    /**
+     * 按照含税价格排序（升序）
+     * @param inquiryID
+     * @return
+     */
+    public Map<String , Object> getInquiryDetailForAnalysisPriceAsc(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        InquiryList inquiryList = listDAO.findById(inquiryID).get();
+        //询价单总汇信息
+        map.put("sum" , inquiryList);
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+        //询价单明细
+        map.put("details" , detailList);
+        List<InquirySupplier> isList = isDao.findById(inquiryID);
+        int no = 0;
+        for(int i = 0 ; i < isList.size() ; i++){
+            InquirySupplier is = isList.get(i);
+            if(is.getStatus().equals("C")){
+                no = no + 1;
+            }
+        }
+        String result = "供应商报价状态（"+no+"/"+isList.size()+"）";
+        //供应商信息
+        map.put("suppliers" , isList);
+        //供应商报价信息
+        map.put("result" , result);
+        //已报价供应商数量
+        map.put("completeNo",no);
+        //询价单中物品的数量
+        map.put("num" , detailList.size());
+        List<InquiryAnswer> answerList = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answers = answerDAO.findByInquiryIDAndDidOrderByAgreePriceAsc(detail.getInquiryID() , detail.getId());
+            for(int j = 0 ; j < answers.size() ; j++){
+                InquiryAnswer answer = answers.get(j);
+                if(answerList.contains(answer)){
+                    continue;
+                }else{
+                    answerList.add(answer);
+                }
+            }
+        }
+        //供应商报价明细  根据询价单中询价物品来排序
+        map.put("answerList" , answerList);
+        return map;
+    }
+
+    /**
+     * 按照交货周期排序（降序）
+     * @param inquiryID
+     * @return
+     */
+    public Map<String , Object> getInquiryDetailForAnalysisCycleDesc(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        InquiryList inquiryList = listDAO.findById(inquiryID).get();
+        //询价单总汇信息
+        map.put("sum" , inquiryList);
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+        //询价单明细
+        map.put("details" , detailList);
+        List<InquirySupplier> isList = isDao.findById(inquiryID);
+        int no = 0;
+        for(int i = 0 ; i < isList.size() ; i++){
+            InquirySupplier is = isList.get(i);
+            if(is.getStatus().equals("C")){
+                no = no + 1;
+            }
+        }
+        String result = "供应商报价状态（"+no+"/"+isList.size()+"）";
+        //供应商信息
+        map.put("suppliers" , isList);
+        //供应商报价信息
+        map.put("result" , result);
+        //已报价供应商数量
+        map.put("completeNo",no);
+        //询价单中物品的数量
+        map.put("num" , detailList.size());
+        List<InquiryAnswer> answerList = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answers = answerDAO.findByInquiryIDAndDidOrderByAgreeCycleDesc(detail.getInquiryID() , detail.getId());
+            for(int j = 0 ; j < answers.size() ; j++){
+                InquiryAnswer answer = answers.get(j);
+                if(answerList.contains(answer)){
+                    continue;
+                }else{
+                    answerList.add(answer);
+                }
+            }
+        }
+        //供应商报价明细  根据询价单中询价物品来排序
+        map.put("answerList" , answerList);
+        return map;
+    }
+
+    /**
+     * 按照交货周期排序（升序）
+     * @param inquiryID
+     * @return
+     */
+    public Map<String , Object> getInquiryDetailForAnalysisCycleAsc(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        InquiryList inquiryList = listDAO.findById(inquiryID).get();
+        //询价单总汇信息
+        map.put("sum" , inquiryList);
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+        //询价单明细
+        map.put("details" , detailList);
+        List<InquirySupplier> isList = isDao.findById(inquiryID);
+        int no = 0;
+        for(int i = 0 ; i < isList.size() ; i++){
+            InquirySupplier is = isList.get(i);
+            if(is.getStatus().equals("C")){
+                no = no + 1;
+            }
+        }
+        String result = "供应商报价状态（"+no+"/"+isList.size()+"）";
+        //供应商信息
+        map.put("suppliers" , isList);
+        //供应商报价信息
+        map.put("result" , result);
+        //已报价供应商数量
+        map.put("completeNo",no);
+        //询价单中物品的数量
+        map.put("num" , detailList.size());
+        List<InquiryAnswer> answerList = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answers = answerDAO.findByInquiryIDAndDidOrderByAgreeCycleAsc(detail.getInquiryID() , detail.getId());
+            for(int j = 0 ; j < answers.size() ; j++){
+                InquiryAnswer answer = answers.get(j);
+                if(answerList.contains(answer)){
+                    continue;
+                }else{
+                    answerList.add(answer);
+                }
+            }
+        }
+        //供应商报价明细  根据询价单中询价物品来排序
+        map.put("answerList" , answerList);
+        return map;
+    }
+
 
     /**
      * 刚载入时加载所有
@@ -395,7 +641,7 @@ public class InquiryService {
     }
 
     /**
-     * 发送邮件
+     * 发送短信
      * 取所有的商务对接人
      * 用 supplierCode / inquiryID 组合生成对应的网址并发送给对应的人
      */
@@ -404,8 +650,152 @@ public class InquiryService {
             Supplier supplier = supplierDAO.findById(suppliers.get(i)).get();
             String phone = supplier.getPhone();
             String website = "http://212.129.134.123:8083/scm/foreAnswer?inquiryID="+inquiryID+"&&supplierCode="+suppliers.get(i);
+            //发送短信
+            SmsSingleSenderResult result2 = SmsConfig.sendMsg(phone, website);
+            JSONObject resultObject = JSONObject.parseObject(String.valueOf(result2));
+            String msg = resultObject.getString("errmsg");
+            if("OK".equals(msg)){
+                System.out.println("发送成功");
+                continue;
+            }else{
+                return msg;
+            }
 
         }
         return "OK";
+    }
+
+    /**
+     * 一键分析，生成3种方案
+     *
+     * 1、最低成本
+     * 询价单中每件物品的采购价格  取供应商报价的最低价格
+     *
+     * 2、最快到货
+     * 询价单中每件物品的采购价格  取供应商交货周期最短的
+     *
+     * 3、最优方案
+     * 询价单中所有物品均在一个供应商那边采购，取总价最低的供应商
+     */
+
+    public Map<String , Object> generateSolution(String inquiryID){
+        Map<String , Object> map = new HashMap<>();
+        List<InquiryDetail> detailList = detailDAO.findByInquiryID(inquiryID);
+
+        /**
+         * 首先判断是否有供应商给出报价
+         */
+        List<InquiryAnswer> ias = answerDAO.findByInquiryID(inquiryID);
+        //最低成本
+        List<InquiryAnswer> answerList1 = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answerList = answerDAO.findByInquiryIDAndDidOrderByAgreePriceAsc(inquiryID , detail.getId());
+            List<InquiryAnswer> answers = new ArrayList<>();
+            BigDecimal lowestPrice = BigDecimal.ZERO;
+            for(int j = 0 ; j < answerList.size() ; j++){
+                InquiryAnswer answer = answerList.get(j);
+                if(j == 0){
+                    answers.add(answer);
+                    lowestPrice = answer.getAgreePrice();
+                }else{
+                    if(lowestPrice.equals(answer.getAgreePrice())){
+                        answers.add(answer);
+                    }
+                }
+            }
+            //若存在给出最低价格的供应商有多个  则随机取一个
+            Random random = new Random();
+            int n = random.nextInt(answers.size());
+            answerList1.add(answers.get(n));
+        }
+        if(answerList1.size() == 0){
+            map.put("info1" , "no");
+        }else{
+            map.put("info1" , "ok");
+            map.put("list1" , answerList1);
+        }
+
+
+        //最快到货
+        List<InquiryAnswer> answerList2 = new ArrayList<>();
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail detail = detailList.get(i);
+            List<InquiryAnswer> answerList = answerDAO.findByInquiryIDAndDidOrderByAgreeCycleAsc(inquiryID , detail.getId());
+            List<InquiryAnswer> answers = new ArrayList<>();
+            int fastest = 0;
+            for(int j = 0 ; j < answerList.size() ; j++){
+                InquiryAnswer answer = answerList.get(j);
+                if(j == 0){
+                    answers.add(answer);
+                    fastest = answer.getAgreeCycle();
+                }else{
+                    if(fastest == answer.getAgreeCycle()){
+                        answers.add(answer);
+                    }
+                }
+            }
+            //若存在给出最低价格的供应商有多个  则随机取一个
+            Random random = new Random();
+            int n = random.nextInt(answers.size());
+            answerList2.add(answers.get(n));
+        }
+        if(answerList2.size() == 0){
+            map.put("info2" , "no");
+        }else{
+            map.put("info2" , "ok");
+            map.put("list2" , answerList2);
+        }
+
+
+        //最优方案
+        List<InquiryAnswer> answerList3 = new ArrayList<>();
+        List<InquirySupplier> isList = isDao.findByIdAndAndStatus(inquiryID , "C");
+        if(isList.size() == 0){
+            map.put("info3" , "no");
+        }else{
+            BigDecimal totalPrice = BigDecimal.ZERO;
+            for(int i = 0 ; i < isList.size() ; i++){
+                String supplierCode = isList.get(i).getSupplierCode();
+                List<InquiryAnswer> answerList = answerDAO.findByInquiryIDAndSupplierCode(inquiryID , supplierCode);
+                if(i == 0){
+                    for(int j = 0 ; j < answerList.size() ; j++){
+                        totalPrice = totalPrice.add(answerList.get(j).getAgreeTotal());
+                    }
+                    answerList3.clear();
+                    answerList3 = answerList;
+                }else{
+                    BigDecimal newTotal = BigDecimal.ZERO;
+                    for(int j = 0 ; j < answerList.size() ; j++){
+                        newTotal = newTotal.add(answerList.get(j).getAgreeTotal());
+                    }
+                    if(totalPrice.compareTo(newTotal) != -1){
+                        totalPrice = newTotal;
+                        answerList3.clear();
+                        answerList3 = answerList;
+                    }
+                }
+            }
+            map.put("info3" , "ok");
+            map.put("list3" , answerList3);
+        }
+        return map;
+    }
+
+    /**
+     * 定时任务
+     * 当 当前时间等于询价单截止时间
+     * 系统自动修改询价单状态
+     * 将询价单状态调整为过期
+     * 遍历所有询价单  代价太大
+     * 直接遍历所有状态为“O”的询价单
+     */
+    public void closeInquiry(){
+        List<InquiryList> inquiryLists = listDAO.findByDeadlineAndStatus(LocalDate.now() , "O");
+        for(InquiryList inquiryList : inquiryLists){
+            inquiryList.setStatusDes("已过期");
+            inquiryList.setStatus("B");
+            listDAO.save(inquiryList);
+        }
     }
 }

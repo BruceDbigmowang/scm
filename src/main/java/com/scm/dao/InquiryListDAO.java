@@ -28,4 +28,9 @@ public interface InquiryListDAO extends JpaRepository<InquiryList , String> {
      */
     List<InquiryList> findAll(Specification<InquiryList> querySpec , Pageable pg);
     List<InquiryList> findAll(Specification<InquiryList> querySpec); //用于查询总数
+
+    /**
+     * 根据日期  询价单状态查询当前时间应关闭的询价单
+     */
+    List<InquiryList> findByDeadlineAndStatus(LocalDate now , String status);
 }

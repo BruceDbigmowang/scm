@@ -430,6 +430,8 @@
                         message:"供应商创建成功",
                         type:"success"
                     });
+                    $("#myModal").modal('hide');
+                    clearInput();
                     loadAllSupplier();
                 }else{
                     $.message({
@@ -460,6 +462,8 @@
                         message:data,
                         type:'success'
                     });
+                    $("#myModal2").modal('hide');
+                    $("#supplierExcel").val("");
                 }else{
                     $.message({
                         message:data,
@@ -471,6 +475,26 @@
                 alert("设备类型文件上传出错");
             }
         })
+    }
+
+    function restSearch() {
+        $("#name").val("");
+        $("#nature").val("");
+        $("#type").val("");
+        $("#auth option:first").prop("selected", 'selected');
+        $("#forb option:first").prop("selected", 'selected');
+    }
+
+    function clearInput() {
+        $("#supplierName").val("");
+        $("#simpleName").val("");
+        $("#supplierNature").val("");
+        $("#supplyType").val("");
+        $("#relationship").val("");
+        $("#area option:first").prop("selected", 'selected');
+        $("#website").val("");
+        $("#postAddress").val("");
+        $("#addressDetail").val("");
     }
 
 </script>

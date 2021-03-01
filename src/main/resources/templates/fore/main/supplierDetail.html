@@ -212,6 +212,10 @@
                         message:"联系人添加成功",
                         type:"success"
                     });
+                    $("#contactName").val("");
+                    $("#contactWay").val("");
+                    $("#contactType option:first").prop("selected", 'selected');
+                    $("#myModal").modal('hide');
                     getDetail();
                 }else{
                     $.message({
@@ -327,6 +331,11 @@
                         message:"该联系人信息已修改",
                         type:"success"
                     });
+                    $("#myModal2").modal('hide');
+                    $("#contactName2").val("");
+                    $("#contactWay2").val("");
+                    $("#contactStatus").val("");
+                    $("#score").val("");
                     getDetail();
                 }else{
                     $.message({
@@ -397,6 +406,7 @@
                         message:"认证信息已保存",
                         type:"success"
                     });
+                    $("#myModal3").modal('hide');
                     getDetail();
                 }else{
                     $.message({
@@ -438,6 +448,8 @@
                         message:"标签已添加",
                         type:"success"
                     });
+                    $("#labelName").val("");
+                    $("#myModal4").modal('hide');
                     getDetail();
                 }else{
                     $.message({
@@ -506,6 +518,10 @@
                         message:data,
                         type:'success'
                     });
+                    $("#materialExcel").val("");
+                    $("#myModal5").modal('hide');
+                    getDetail();
+
                 }else{
                     $.message({
                         message:data,
