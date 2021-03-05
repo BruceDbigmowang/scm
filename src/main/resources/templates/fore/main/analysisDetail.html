@@ -11,6 +11,7 @@
 <script>
 
     var middleNo = 0;
+    var targetNum = 0;
     $(function () {
         getDetail();
     })
@@ -35,6 +36,7 @@
             success:function (data) {
                 var sum = data.sum;
                 var details = data.details;
+                targetNum = details.length;
                 var suppliers = data.suppliers;
                 $("#inquiryID").val(sum.inquiryID);
                 $("#inquiryDate").val(sum.inquiryDate);
@@ -770,7 +772,7 @@
         $("input[type=checkbox]:checked").each(function () {
             arr.push($(this).val());
         });
-        if(arr.length != middleNo){
+        if(arr.length != targetNum){
             $.message({
                 message:"请检查供应商是否均已勾选",
                 type:"warning"

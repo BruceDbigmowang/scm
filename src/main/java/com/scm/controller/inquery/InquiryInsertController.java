@@ -111,7 +111,8 @@ public class InquiryInsertController {
         List<String> supplierList = Arrays.asList(supplyArr);
 
         String result = inquiryService.createInquiry(inquiryList , inquiryDetailList , supplierList);
-        return result;
+        String result2 = inquiryService.sendMessage(inquiryID , supplierList);
+        return result2;
 
     }
 
@@ -185,7 +186,9 @@ public class InquiryInsertController {
         String[] supplierArr = suppliers.split(",");
         List<String> supplierList = Arrays.asList(supplierArr);
 
-        return inquiryService.createInquiry(inquiryList , detailList , supplierList);
+        String result = inquiryService.createInquiry(inquiryList , detailList , supplierList);
+        String result2 = inquiryService.sendMessage(inquiryID , supplierList);
+        return result2;
     }
 
     @RequestMapping(value="getExcelContent" , method = RequestMethod.POST)
@@ -198,5 +201,14 @@ public class InquiryInsertController {
             map.put("materialList" , materialList);
         }
         return map;
+    }
+
+    @RequestMapping(value = "remindSupplier" , method = RequestMethod.POST)
+    public String toRemindSupplier(String inquiryID , String[] suppliers){
+        System.out.println(inquiryID);
+        System.out.println(suppliers[0]);
+        List<String> supplierList = Arrays.asList(suppliers);
+        return inquiryService.sendMessage(inquiryID , supplierList);
+//        return "OK";
     }
 }

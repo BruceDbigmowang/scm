@@ -21,8 +21,8 @@ public class AnswerSelectController {
      *   4、加载询价单明细信息
      */
     @RequestMapping(value = "getInquiryDetail" , method = RequestMethod.GET)
-    public Map<String , Object> loadDetail(String inquiryID , String supplierCode){
-        return answerService.loadProduct(inquiryID , supplierCode);
+    public Map<String , Object> loadDetail(int num){
+        return answerService.loadProduct(num);
     }
 
     /**

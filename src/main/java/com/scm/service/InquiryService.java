@@ -5,8 +5,10 @@ import com.github.qcloudsms.SmsSingleSenderResult;
 import com.scm.config.SmsConfig;
 import com.scm.dao.*;
 import com.scm.entity.InquiryDTO;
+import com.scm.pk.PKInquirySupplier;
 import com.scm.pojo.*;
 import com.scm.utils.ExcelUtils;
+import com.scm.utils.PhoneCode;
 import com.scm.utils.QueryUtil;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,6 +124,7 @@ public class InquiryService {
             is.setStatusDes("未报价");
             isDao.save(is);
         }
+
         return "OK";
     }
 
@@ -649,16 +652,23 @@ public class InquiryService {
         for(int i = 0 ; i < suppliers.size() ; i++){
             Supplier supplier = supplierDAO.findById(suppliers.get(i)).get();
             String phone = supplier.getPhone();
-            String website = "http://212.129.134.123:8083/scm/foreAnswer?inquiryID="+inquiryID+"&&supplierCode="+suppliers.get(i);
             //发送短信
-            SmsSingleSenderResult result2 = SmsConfig.sendMsg(phone, website);
-            JSONObject resultObject = JSONObject.parseObject(String.valueOf(result2));
-            String msg = resultObject.getString("errmsg");
-            if("OK".equals(msg)){
+            String supplierCode = supplier.getSupplierCode();
+            PKInquirySupplier pk = new PKInquirySupplier();
+            pk.setId(inquiryID);
+            pk.setSupplierCode(supplierCode);
+            List<InquirySupplier> isList = isDao.findByIdAndSupplierCode(inquiryID , supplierCode);
+            if(isList.isEmpty()){
+                return "系统出错";
+            }
+            InquirySupplier is = isList.get(0);
+            String text = "?id="+is.getNum();
+            String result2 = PhoneCode.getPhonemsg(phone , text);
+            if("OK".equals(result2)){
                 System.out.println("发送成功");
                 continue;
             }else{
-                return msg;
+                return result2;
             }
 
         }

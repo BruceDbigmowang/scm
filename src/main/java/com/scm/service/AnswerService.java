@@ -34,8 +34,11 @@ public class AnswerService {
      * 询价单总汇信息
      * 询价单明细信息
      */
-    public Map<String , Object> loadProduct(String inquiryID , String supplierCode){
+    public Map<String , Object> loadProduct(int num){
         Map<String , Object> map = new HashMap<>();
+        InquirySupplier is = inquirySupplierDAO.findById(num).get();
+        String inquiryID = is.getId();
+        String supplierCode = is.getSupplierCode();
         Supplier supplier = supplierDAO.findById(supplierCode).get();
         map.put("supplier" , supplier);
         InquiryList inquiryList = inquiryListDAO.findById(inquiryID).get();
@@ -43,15 +46,18 @@ public class AnswerService {
         LocalDate deadline = inquiryList.getDeadline();
         if(deadline.isEqual(LocalDate.now()) || deadline.isAfter(LocalDate.now())){
             if(inquiryList.getStatus().equals("O")){
-                PKInquirySupplier pk = new PKInquirySupplier();
-                pk.setId(inquiryID);
-                pk.setSupplierCode(supplierCode);
-                InquirySupplier inquirySupplier = inquirySupplierDAO.findById(pk).get();
-                if(inquirySupplier.getStatus().equals("O")){
-                    map.put("result" , "OK");
+                List<InquirySupplier> isList = inquirySupplierDAO.findByIdAndSupplierCode(inquiryID , supplierCode);
+                if(!isList.isEmpty()){
+                    InquirySupplier inquirySupplier = isList.get(0);
+                    if(inquirySupplier.getStatus().equals("O")){
+                        map.put("result" , "OK");
+                    }else{
+                        map.put("result" , "3");
+                    }
                 }else{
-                    map.put("result" , "3");
+                    map.put("result","数据查询错误");
                 }
+
 
             }else{
                 map.put("result" , "1");
@@ -60,6 +66,15 @@ public class AnswerService {
             map.put("result" , "2");
         }
         List<InquiryDetail> detailList = inquiryDetailDAO.findByInquiryID(inquiryID);
+        for(int i = 0 ; i < detailList.size() ; i++){
+            InquiryDetail inquiryDetail = detailList.get(i);
+            if(inquiryDetail.getBrand() == null){
+                inquiryDetail.setBrand("");
+            }
+            if(inquiryDetail.getNote() == null){
+                inquiryDetail.setNote("");
+            }
+        }
         map.put("details" , detailList);
         return map;
     }
@@ -77,20 +92,21 @@ public class AnswerService {
      */
     @Transactional
     public String saveAnswer(List<InquiryAnswer> answerList , String inquiryID , String supplierCode){
-        try{
-            for(InquiryAnswer answer : answerList){
-                answerDAO.save(answer);
-            }
-            PKInquirySupplier pk = new PKInquirySupplier();
-            pk.setId(inquiryID);
-            pk.setSupplierCode(supplierCode);
-            InquirySupplier inquirySupplier = inquirySupplierDAO.findById(pk).get();
-            inquirySupplier.setStatus("C");
-            inquirySupplier.setStatusDes("已报价");
-            inquirySupplierDAO.save(inquirySupplier);
-        }catch (Exception e){
-            return e.getMessage();
+
+        List<InquirySupplier> isList = inquirySupplierDAO.findByIdAndSupplierCode(inquiryID , supplierCode);
+        InquirySupplier inquirySupplier = isList.get(0);
+        if(inquirySupplier.getStatus().equals("O")){
+            return "报价单已填写完成";
         }
+
+        for(InquiryAnswer answer : answerList){
+            answerDAO.save(answer);
+        }
+
+        inquirySupplier.setStatus("C");
+        inquirySupplier.setStatusDes("已报价");
+        inquirySupplierDAO.save(inquirySupplier);
+
         return "OK";
     }
 
@@ -137,5 +153,10 @@ public class AnswerService {
             answerDAO.save(inquiryAnswer);
         }
         return "OK";
+    }
+
+    public InquirySupplier findByNum(int num){
+        return inquirySupplierDAO.findById(num).get();
+
     }
 }

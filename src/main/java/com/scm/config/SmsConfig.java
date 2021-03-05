@@ -107,7 +107,7 @@ public class SmsConfig {
         return res;
     }
 
-    public static SmsSingleSenderResult sendMsg(String phone , String message){
+    public static SmsSingleSenderResult sendMsg(String phone , String inquiryID , String supplierCode){
         String nationCode = "+86";
         Integer templateId = 1;
         int appid = 1;
@@ -116,7 +116,7 @@ public class SmsConfig {
         nationCode = nationCode.substring(1);
         SmsSingleSenderResult result = new SmsSingleSenderResult();
         try {
-            String[] params = {message};  //第一个参数传递{1}位置想要的内容，第二个传递{2}的内容，以此类推。
+            String[] params = {inquiryID , supplierCode};  //第一个参数传递{1}位置想要的内容，第二个传递{2}的内容，以此类推。
             SmsSingleSender sender = new SmsSingleSender(appid, SDKAppKey);
             result = sender.sendWithParam(nationCode, phone,
                     templateId, params, smsSign, "", "");

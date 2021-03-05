@@ -3,23 +3,29 @@ package com.scm.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.scm.pk.PKInquirySupplier;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "SCM_InquirySupplier")
-@IdClass(PKInquirySupplier.class)
 @JsonIgnoreProperties({"handler" , "hibernateLazyInitializer"})
 public class InquirySupplier {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int num;
+
     String id;
-    @Id
     String supplierCode;
     String supplierName;
     String status;
     String statusDes;
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public String getId() {
         return id;
@@ -60,4 +66,6 @@ public class InquirySupplier {
     public void setStatusDes(String statusDes) {
         this.statusDes = statusDes;
     }
+
+
 }

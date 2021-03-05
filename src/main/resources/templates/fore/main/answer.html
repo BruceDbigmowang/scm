@@ -68,11 +68,10 @@
     })
 
     function loadDetail() {
-        var inquiryID = getQueryVariable("inquiryID");
-        var supplierCode = getQueryVariable("supplierCode");
+        var num = getQueryVariable("id");
         $.ajax({
             type:"get",
-            data:{"inquiryID":inquiryID , "supplierCode":supplierCode},
+            data:{"num":num},
             url:"getInquiryDetail",
             async:false,
             success:function (data) {
@@ -106,9 +105,9 @@
                             '</table>'+
                             '  </div>\n' +
                             '</div>'+
-                            '<table class="table">'+"<tr>"+"<td style='width: 72px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
-                            "<tr>"+"<td>含税单价</td>"+"<td>"+'<input name="price" class="form-control">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
-                            "<tr>"+"<td>交货周期(/天)</td>"+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
+                            '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
+                            "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                            "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
                             '</table>'+"<br>"
                         );
                     }
@@ -135,7 +134,7 @@
     }
 
     function writeAnswer() {
-        var inquiryID = getQueryVariable("inquiryID");
+        var num = getQueryVariable("id");
         var supplierCode = getQueryVariable("supplierCode");
         var brands =[];
         $("input[name='brand']").each(function(){
@@ -161,7 +160,7 @@
         $("input[name='validityTime']").each(function () {
             validityTimes.push($(this).val());
         })
-        var data = {"inquiryID":inquiryID , "supplierCode":supplierCode ,"brands":brands , "specifications":specifications , "prices":prices , "totalPrices":totalPrices , "cycles":cycles , "validityTimes":validityTimes};
+        var data = {"num":num , "supplierCode":supplierCode ,"brands":brands , "specifications":specifications , "prices":prices , "totalPrices":totalPrices , "cycles":cycles , "validityTimes":validityTimes};
         $.ajax({
             type:"post",
             data:data,

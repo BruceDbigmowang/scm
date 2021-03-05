@@ -65,7 +65,7 @@
                     if(suppliers[i].status == "C"){
                         $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"已报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="getSupplierInquiry(\''+suppliers[i].supplierCode+'\')">查看报价</a>'+"<br>");
                     }else{
-                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#">提醒他</a>'+"<br>");
+                        $("#answerStatus").append(suppliers[i].supplierName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"未报价"+"&nbsp;&nbsp;"+'<a href="#" onclick="sendMessage(\''+suppliers[i].supplierCode+'\')">提醒他</a>'+"<br>");
                     }
                 }
             }
@@ -75,6 +75,33 @@
     function getSupplierInquiry(supplierCode) {
         var inquiryID = getQueryVariable("inquiryID");
         window.location.href="foreSupplierInquiry?supplierCode="+supplierCode+"&&inquiryID="+inquiryID;
+    }
+
+    function sendMessage(supplierCode) {
+        var inquiryID = getQueryVariable("inquiryID");
+        var suppliers = [];
+        suppliers.push(supplierCode);
+        var data = {"inquiryID":inquiryID , "suppliers":suppliers};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"remindSupplier",
+            async:false,
+            traditional:true,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"信息已发送",
+                        type:"success"
+                    });
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    });
+                }
+            }
+        })
     }
 </script>
 <style>
