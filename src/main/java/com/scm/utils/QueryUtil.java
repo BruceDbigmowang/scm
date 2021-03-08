@@ -14,6 +14,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 由于Data JPA 的查询中  And Or 不能同时使用
+ * 需要重写查询语句
+ * 将and or的查询语句拼接 来查询出最终结果
+ */
 public class QueryUtil{
 
     /**

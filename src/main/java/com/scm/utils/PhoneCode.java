@@ -79,13 +79,13 @@ public class PhoneCode {
 //                System.out.println(code);
 //                session.setAttribute("code",code);
                 // 请求成功
-                System.out.println("获取验证码成功！！！");
+                System.out.println("阿里云消息发送成功！！！");
                 return "OK";
             } else {
                 //如果验证码出错，会输出错误码告诉你具体原因
                 System.out.println(sendSmsResponse.getCode());
-                System.out.println("获取验证码失败...");
-                return "获取验证码失败";
+                System.out.println("阿里云消息发送失败...");
+                return "阿里云消息发送失败";
             }
         } catch (ClientException e) {
             e.printStackTrace();

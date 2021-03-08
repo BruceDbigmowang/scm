@@ -21,6 +21,11 @@ public class SupplierInsertController {
     @Autowired
     SupplierService supplierService;
 
+    /**
+     * 创建新的供应商
+     *
+     * 只保存供应商基本信息
+     */
     @RequestMapping(value = "createSupplier" , method = RequestMethod.POST)
     public String saveSupplier(HttpSession session , String supplierName , String simpleName , String supplierNature , String supplyType , String relationship , String area , String website , String postAddress , String addressDetail){
         Supplier supplier = new Supplier();
@@ -77,11 +82,17 @@ public class SupplierInsertController {
         return result;
     }
 
+    /**
+     * 创建新的联系人
+     */
     @RequestMapping(value = "createContact" , method = RequestMethod.POST)
     public String saveContact(String supplierCode , String contactName , String contactWay , String contactType) throws SQLException {
         return supplierService.saveContact(supplierCode , contactName , contactWay , contactType);
     }
 
+    /**
+     * 保存认证信息
+     */
     @RequestMapping(value = "saveAuthenInfo" , method = RequestMethod.POST)
     public String saveAuthencation(String supplierCode , String establishDate , String legalPerson , String registerMoney , String creditCode , String registerAddress , String picName) throws SQLException {
 
@@ -96,11 +107,18 @@ public class SupplierInsertController {
         return supplierService.saveAuthentication(supplierCode , establishDate , legalPerson , money , creditCode , registerAddress , picName);
     }
 
+    /**
+     * 创建新的标签
+     */
     @RequestMapping(value = "createLabel" , method = RequestMethod.POST)
     public String saveLabel(String supplierCode , String labelName) throws SQLException {
         return supplierService.createLabel(supplierCode , labelName);
     }
 
+    /**
+     * 批量导入 物料信息
+     * 用Excel文件导入，模板见附件
+     */
     @RequestMapping(value = "uploadMaterialInfo" , method = RequestMethod.POST)
     public String uploadMaterial(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         String errorInfo = supplierService.checkMaterialrEnter(request , response);
@@ -112,6 +130,10 @@ public class SupplierInsertController {
         }
     }
 
+    /**
+     * 批量导入供应商信息
+     * 用Excel文件导入，模板见附件
+     */
     @RequestMapping(value = "uploadSupplierInfo" , method = RequestMethod.POST)
     public String uploadSupplier(HttpServletRequest request, HttpServletResponse response , HttpSession session) throws SQLException {
         String errorInfo = supplierService.checkSupplierEnter(request , response);

@@ -33,4 +33,12 @@ public interface InquiryListDAO extends JpaRepository<InquiryList , String> {
      * 根据日期  询价单状态查询当前时间应关闭的询价单
      */
     List<InquiryList> findByDeadlineAndStatus(LocalDate now , String status);
+
+    /**
+     * 截止日期在当前时间之前 关闭询价单
+     *
+     * 目的：以防之前由于系统出现问题，导致某些询价单在截止时间没有关闭
+     * 系统恢复正常之后，第二天重新关闭过期询价单
+     */
+    List<InquiryList> findByDeadlineBeforeAndStatus(LocalDate now , String status);
 }

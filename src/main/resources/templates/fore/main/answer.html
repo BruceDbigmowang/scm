@@ -106,7 +106,7 @@
                             '  </div>\n' +
                             '</div>'+
                             '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
-                            "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                            "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
                             "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
                             '</table>'+"<br>"
                         );
@@ -181,6 +181,18 @@
                 }
             }
         })
+    }
+
+    function getTotalMoney(obj) {
+        var price = obj.value;
+        var quantity = obj.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerText;
+        obj.parentNode.parentNode.cells[3].childNodes[0].value = accMul(price , quantity);
+    }
+    function accMul(arg1,arg2) {
+        var m=0,s1=arg1.toString(),s2=arg2.toString();
+        try{m+=s1.split(".")[1].length}catch(e){}
+        try{m+=s2.split(".")[1].length}catch(e){}
+        return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
     }
 </script>
 </body>

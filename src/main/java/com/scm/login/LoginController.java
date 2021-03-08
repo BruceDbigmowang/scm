@@ -53,6 +53,12 @@ public class LoginController {
     }
 
 
+    /**
+     * 登陆功能
+     * 根据账号 、 密码 、 验证码 进行登录（账号不能被冻结）
+     * 账号允许是账号 手机号
+     *
+     */
     @RequestMapping(value="logins",method = RequestMethod.POST)
     @ResponseBody
     public Result loginCheck(@RequestBody Map<String,String> userData , HttpSession session, HttpServletRequest req) throws UnknownHostException {

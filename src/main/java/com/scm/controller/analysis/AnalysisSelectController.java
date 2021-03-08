@@ -25,21 +25,37 @@ public class AnalysisSelectController {
         return inquiryService.getInquiryDetailForAnalysis(inquiryID);
     }
 
+    /**
+     * 所有的供应商报价
+     * 按照价格降序
+     */
     @RequestMapping(value = "findInquiryDetailForAnalysisPriceDesc" , method = RequestMethod.GET)
     public Map<String , Object> getInquiryDetailforanalyPriceDesc(String inquiryID){
         return inquiryService.getInquiryDetailForAnalysisPriceDesc(inquiryID);
     }
 
+    /**
+     * 所有的供应商报价
+     * 按照价格升序
+     */
     @RequestMapping(value = "findInquiryDetailForAnalysisPriceAsc" , method = RequestMethod.GET)
     public Map<String , Object> getInquiryDetailforanalyPriceAsc(String inquiryID){
         return inquiryService.getInquiryDetailForAnalysisPriceAsc(inquiryID);
     }
 
+    /**
+     * 所有的供应商报价
+     * 按照交货周期降序
+     */
     @RequestMapping(value = "findInquiryDetailForAnalysisCycleDesc" , method = RequestMethod.GET)
     public Map<String , Object> getInquiryDetailforanalyCycleDesc(String inquiryID){
         return inquiryService.getInquiryDetailForAnalysisCycleDesc(inquiryID);
     }
 
+    /**
+     * 所有的供应商报价
+     * 按照交货周期升序
+     */
     @RequestMapping(value = "findInquiryDetailForAnalysisCycleAsc" , method = RequestMethod.GET)
     public Map<String , Object> getInquiryDetailforanalyCycleAsc(String inquiryID){
         return inquiryService.getInquiryDetailForAnalysisCycleAsc(inquiryID);

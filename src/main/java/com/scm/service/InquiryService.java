@@ -1,8 +1,6 @@
 package com.scm.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.github.qcloudsms.SmsSingleSenderResult;
-import com.scm.config.SmsConfig;
+
 import com.scm.dao.*;
 import com.scm.entity.InquiryDTO;
 import com.scm.pk.PKInquirySupplier;
@@ -10,7 +8,6 @@ import com.scm.pojo.*;
 import com.scm.utils.ExcelUtils;
 import com.scm.utils.PhoneCode;
 import com.scm.utils.QueryUtil;
-import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -410,6 +407,7 @@ public class InquiryService {
      */
     public Map<String , Object> findAll(int start){
         Map<String , Object> map = new HashMap<>();
+        System.out.println(start);
         PageRequest pr = PageRequest.of(start , 10);
         List<InquiryList> list = listDAO.findAllByOrderByCreateDateDesc(pr);
         map.put("lists" , list);
@@ -803,6 +801,12 @@ public class InquiryService {
     public void closeInquiry(){
         List<InquiryList> inquiryLists = listDAO.findByDeadlineAndStatus(LocalDate.now() , "O");
         for(InquiryList inquiryList : inquiryLists){
+            inquiryList.setStatusDes("已过期");
+            inquiryList.setStatus("B");
+            listDAO.save(inquiryList);
+        }
+        List<InquiryList> inquiryLists1 = listDAO.findByDeadlineBeforeAndStatus(LocalDate.now() , "O");
+        for(InquiryList inquiryList : inquiryLists1){
             inquiryList.setStatusDes("已过期");
             inquiryList.setStatus("B");
             listDAO.save(inquiryList);

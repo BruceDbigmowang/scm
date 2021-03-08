@@ -92,10 +92,9 @@ public class AnswerService {
      */
     @Transactional
     public String saveAnswer(List<InquiryAnswer> answerList , String inquiryID , String supplierCode){
-
         List<InquirySupplier> isList = inquirySupplierDAO.findByIdAndSupplierCode(inquiryID , supplierCode);
         InquirySupplier inquirySupplier = isList.get(0);
-        if(inquirySupplier.getStatus().equals("O")){
+        if(inquirySupplier.getStatus().equals("C")){
             return "报价单已填写完成";
         }
 

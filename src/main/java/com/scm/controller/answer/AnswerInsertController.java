@@ -75,19 +75,6 @@ public class AnswerInsertController {
                     return "产品"+no+"含税价格填写错误(只能填写数字)";
                 }
             }
-//            if("".equals(totalPrices[i])){
-//                return "产品"+no+"合计价格未填写";
-//            }else{
-//                try{
-//                    BigDecimal totalPrice = new BigDecimal(totalPrices[i]);
-//                    answer.setTotalPrice(totalPrice);
-//                    answer.setAgreeTotal(totalPrice);
-//                    answer.setTaxRate(BigDecimal.ZERO);
-//                }catch (Exception e){
-//                    return "产品"+no+"合计价格填写错误(只能填写数字)";
-//                }
-//            }
-
 
             if(cycles.length != 0 && "".equals(cycles[i])){
                 return "产品"+no+"交货周期未填写";

@@ -177,7 +177,9 @@ public class InquiryInsertController {
 
             inquiryDetail.setCreater(user.getAccount());
             inquiryDetail.setCreaterName(user.getName());
-            inquiryDetail.setPicName(picNames[i]);
+            if(picNames.length > i && !"".equals(picNames[i])){
+                inquiryDetail.setPicName(picNames[i]);
+            }
             inquiryDetail.setCreateDate(LocalDate.now());
             detailList.add(inquiryDetail);
         }
@@ -203,6 +205,11 @@ public class InquiryInsertController {
         return map;
     }
 
+    /**
+     * 创建询价单之后 系统会向供应商的联系人发送询价单网址，供应商点击进入来进行报价
+     *
+     * 若供应商长时间未报价  用户可向供应商再次发送消息来提醒供应商进行报价
+     */
     @RequestMapping(value = "remindSupplier" , method = RequestMethod.POST)
     public String toRemindSupplier(String inquiryID , String[] suppliers){
         System.out.println(inquiryID);

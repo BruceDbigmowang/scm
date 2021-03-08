@@ -17,11 +17,21 @@ public class SupplierUpdateController {
     @Autowired
     SupplierService supplierService;
 
+    /**
+     * 将某个联系人设置为主要对接人
+     * 1、判断是否存在其他的对接人
+     * 2、若有 则修改原来的对接人为一般联系人
+     * 3、将前台传来的对接人设置为 对接人
+     * 4、修改供应商基础信息表中的对接人信息，方便后面直接使用
+     */
     @RequestMapping(value = "setPrincipal" , method = RequestMethod.PUT)
     public String addPrincipal(int contactId){
         return supplierService.setPrincipal(contactId);
     }
 
+    /**
+     * 修改联系人信息
+     */
     @RequestMapping(value = "changeContact" , method = RequestMethod.PUT)
     public String updateContact(int contactId , String contactName , String contactWay , String contactType , String contactStatus, String score) throws SQLException {
         BigDecimal grade = null;
@@ -33,6 +43,9 @@ public class SupplierUpdateController {
         return supplierService.updateContact(contactId , contactName , contactWay , contactType, contactStatus , grade);
     }
 
+    /**
+     * 更新供应商基础信息
+     */
     @RequestMapping(value = "changeSupplier" , method = RequestMethod.PUT)
     public String updateSupplier(String supplierCode , String simpleName , String supplierNature , String supplyType , String relationship , String area , String website , String postAddress , String addressDetail){
         Supplier supplier = supplierService.getOne(supplierCode);

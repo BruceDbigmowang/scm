@@ -14,6 +14,9 @@ public class SupplierDeleteController {
     @Autowired
     SupplierService supplierService;
 
+    /**
+     * 删除某一标签
+     */
     @RequestMapping(value = "deleteLabel" , method = RequestMethod.DELETE)
     public String deleteLab(String supplierCode , String labelName) throws SQLException {
         return supplierService.deleteLabel(supplierCode , labelName);

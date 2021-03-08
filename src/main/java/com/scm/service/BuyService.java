@@ -78,6 +78,11 @@ public class BuyService {
         return number;
     }
 
+    /**
+     * 获取供应商信息
+     * @param suppliers
+     * @return
+     */
     public List<Supplier> getSupplierInfo(String[] suppliers){
         List<Supplier> supplierList = new ArrayList<>();
         for(int i = 0 ; i < suppliers.length ; i++){
@@ -239,6 +244,11 @@ public class BuyService {
         return map;
     }
 
+    /**
+     * 分页查询所有的采购单
+     * @param start
+     * @return
+     */
     public Map<String , Object> findAllBuySum(int start){
         Map<String , Object> map = new HashMap<>();
         PageRequest pr = PageRequest.of(start, 10);

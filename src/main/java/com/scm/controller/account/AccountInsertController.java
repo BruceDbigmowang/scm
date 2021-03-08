@@ -11,6 +11,9 @@ public class AccountInsertController {
     @Autowired
     UserService userService;
 
+    /**
+     * 新增用户
+     */
     @RequestMapping(value = "addAccount" , method = RequestMethod.POST)
     public String createAccount(String account , String name , String phone , String email , int roleId){
         return userService.addAccount(account , name , phone , email , roleId);
