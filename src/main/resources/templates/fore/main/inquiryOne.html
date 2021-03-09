@@ -20,7 +20,7 @@
     function getAllSup() {
         $.ajax({
             type:"get",
-            url:"findAllSupplier",
+            url:"findAllSupplier",//InquirySelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -51,7 +51,7 @@
         $.ajax({
             type:"get",
             data:{"productName":productName},
-            url:"findAllSpecification",
+            url:"findAllSpecification",//InquirySelectController
             async:false,
             success:function (data) {
                 $("#allSpecification").html("");
@@ -152,7 +152,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"writeOneInquiry",
+            url:"writeOneInquiry",//InquiryInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -174,7 +174,7 @@
         $.ajaxFileUpload({
             type:"post",
             fileElementId:"productPic",
-            url:"saveProductPic",
+            url:"saveProductPic",//PicController
             async:false,
             dataType:'text',
             success:function(data){

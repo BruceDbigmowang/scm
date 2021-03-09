@@ -31,7 +31,7 @@
         $.ajax({
             type:"get",
             data:{"supplierCode":supplierCode , "inquiryID":inquiryID},
-            url:"getSupplierAnswer",
+            url:"getSupplierAnswer",//AnswerSelectController
             async:false,
             success:function (data) {
                 var supplier = data.supplier;
@@ -92,7 +92,7 @@
         $.ajax({
             type:"put",
             data:data,
-            url:"updatePrice",
+            url:"updatePrice",//AnswerUpdateController
             async:false,
             traditional:true,
             success:function (data) {

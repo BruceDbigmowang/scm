@@ -31,7 +31,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetailForAnalysis",
+            url:"findInquiryDetailForAnalysis",// analysisSelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -222,7 +222,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetailForAnalysisPriceAsc",
+            url:"findInquiryDetailForAnalysisPriceAsc",// analysisSelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -339,7 +339,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetailForAnalysisPriceDesc",
+            url:"findInquiryDetailForAnalysisPriceDesc",// analysisSelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -456,7 +456,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetailForAnalysisCycleAsc",
+            url:"findInquiryDetailForAnalysisCycleAsc",// analysisSelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -573,7 +573,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetailForAnalysisCycleDesc",
+            url:"findInquiryDetailForAnalysisCycleDesc",// analysisSelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -690,7 +690,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findSolution",
+            url:"findSolution",//analysisSelectController
             async:false,
             success:function (data) {
                 var info1 = data.info1;
@@ -786,7 +786,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"createBuyOrderByChoose",
+            url:"createBuyOrderByChoose",//BuyInsertController
             async:false,
             traditional:true,
             success:function (data) {
@@ -812,7 +812,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"chooseSolution",
+            url:"chooseSolution",//BuyInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -838,7 +838,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"chooseSolution",
+            url:"chooseSolution",//BuyInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -863,7 +863,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"chooseSolution",
+            url:"chooseSolution",//BuyInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){

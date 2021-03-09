@@ -24,7 +24,7 @@
         $.ajax({
             type:"get",
             data:{"start":start},
-            url:"findAllUser",
+            url:"findAllUser",//AccountSelectController
             async:false,
             success:function (data) {
                 var users = data.users;
@@ -69,7 +69,7 @@
             $.ajax({
                 type:"get",
                 data:{"start":start},
-                url:"findAllUser",
+                url:"findAllUser",//AccountSelectController
                 async:false,
                 success:function (data) {
                     var users = data.users;
@@ -119,7 +119,7 @@
             $.ajax({
                 type:"get",
                 data:{"start":start},
-                url:"findAllUser",
+                url:"findAllUser",//AccountSelectController
                 async:false,
                 success:function (data) {
                     var users = data.users;
@@ -168,7 +168,7 @@
         $.ajax({
             type:"get",
             data:{"start":start},
-            url:"findAllUser",
+            url:"findAllUser",//AccountSelectController
             async:false,
             success:function (data) {
                 var users = data.users;
@@ -213,7 +213,7 @@
         $.ajax({
             type:"put",
             data:{"account":account , "status":status},
-            url:"changeAccountStatus",
+            url:"changeAccountStatus",//AccountUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -235,7 +235,7 @@
             $.ajax({
                 type:"put",
                 data:{"account":account , "status":status},
-                url:"changeAccountStatus",
+                url:"changeAccountStatus",//AccountUpdateController
                 async:false,
                 success:function (data) {
                     if(data == "OK"){
@@ -256,7 +256,7 @@
         $.ajax({
             type:"put",
             data:{"account":account},
-            url:"restPassword",
+            url:"restPassword",//AccountUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -284,7 +284,7 @@
             $.ajax({
                 type:"get",
                 data:{"search":search},
-                url:"findUserByCondition",
+                url:"findUserByCondition",//AccountSelectController
                 async:false,
                 success:function (data) {
                     $("#accountList").html("");
@@ -318,7 +318,7 @@
     function showAllRole() {
         $.ajax({
             type:"get",
-            url:"selectAllRole",
+            url:"selectAllRole",//AccountSelectController
             async:false,
             success:function (data) {
                 $("#role").html("");
@@ -387,7 +387,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"addAccount",
+            url:"addAccount",//AccountInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){

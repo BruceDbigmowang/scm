@@ -18,7 +18,7 @@
     function loadUserInfo() {
         $.ajax({
             type:"get",
-            url:"getAccountInfo",
+            url:"getAccountInfo",//AccountSelectController
             async:false,
             success:function (data) {
                 $("#name").val(data.name);
@@ -56,7 +56,7 @@
         $.ajax({
             type:"put",
             data:{"phone":phone},
-            url:"changePhone",
+            url:"changePhone",//AccountUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -96,7 +96,7 @@
         $.ajax({
             type:"put",
             data:{"email":email},
-            url:"changeEmail",
+            url:"changeEmail",//AccountUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -152,7 +152,7 @@
         $.ajax({
             type:"put",
             data:data,
-            url:"changePassword",
+            url:"changePassword",//AccountUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){

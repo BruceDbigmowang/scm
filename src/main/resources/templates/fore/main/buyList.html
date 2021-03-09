@@ -21,7 +21,7 @@
         $.ajax({
             type:"get",
             data:{"start":start},
-            url:"findBuySumByPage",
+            url:"findBuySumByPage",//BuySelectController
             async:false,
             success:function (data) {
                 $("#result").html("");
@@ -79,7 +79,7 @@
             $.ajax({
                 type:"get",
                 data:{"start":start},
-                url:"findBuySumByPage",
+                url:"findBuySumByPage",//BuySelectController
                 async:false,
                 success:function (data) {
                     $("#result").html("");
@@ -138,7 +138,7 @@
             $.ajax({
                 type:"get",
                 data:{"start":start},
-                url:"findBuySumByPage",
+                url:"findBuySumByPage",//BuySelectController
                 async:false,
                 success:function (data) {
                     $("#result").html("");
@@ -191,7 +191,7 @@
         $.ajax({
             type:"get",
             data:{"start":start},
-            url:"findBuySumByPage",
+            url:"findBuySumByPage",//BuySelectController
             async:false,
             success:function (data) {
                 $("#result").html("");
@@ -250,7 +250,7 @@
             $.ajax({
                 type:"get",
                 data:data,
-                url:"findBuySumByCondition",
+                url:"findBuySumByCondition",//BuySelectController
                 async:false,
                 success:function (data) {
                     $("#result").html("");
@@ -313,7 +313,7 @@
         $.ajax({
             type:"put",
             data:{"buyID":buyID},
-            url:"closeBuyOrder",
+            url:"closeBuyOrder",//BuyUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){

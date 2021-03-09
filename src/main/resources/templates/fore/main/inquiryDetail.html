@@ -28,7 +28,7 @@
         $.ajax({
             type:"get",
             data:{"inquiryID":inquiryID},
-            url:"findInquiryDetail",
+            url:"findInquiryDetail",//InquirySelectController
             async:false,
             success:function (data) {
                 var sum = data.sum;
@@ -85,7 +85,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"remindSupplier",
+            url:"remindSupplier",//InquiryInsertController
             async:false,
             traditional:true,
             success:function (data) {

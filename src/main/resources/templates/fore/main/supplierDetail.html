@@ -39,7 +39,7 @@
         $.ajax({
             type:"post",
             data:{"supplierCode":supplierCode},
-            url:"findSupplierDetail",
+            url:"findSupplierDetail",//SupplierSelectController
             async:false,
             success:function (data) {
                 var supplier = data.supplier;
@@ -204,7 +204,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"createContact",
+            url:"createContact",//SupplierInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -233,7 +233,7 @@
         $.ajax({
             type:"put",
             data:{"contactId":contactId},
-            url:"setPrincipal",
+            url:"setPrincipal",//SupplierUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -261,7 +261,7 @@
         $.ajax({
             type:"post",
             data:{"contactId":contactId},
-            url:"getContactDetail",
+            url:"getContactDetail",//SupplierSelectController
             async:false,
             success:function (data) {
                 $("#contactName2").val(data.contactName);
@@ -323,7 +323,7 @@
         $.ajax({
             type:"put",
             data:data,
-            url:"changeContact",
+            url:"changeContact",//SupplierUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -362,7 +362,7 @@
             type:"post",
             data:{"supplierCode":supplierCode},
             fileElementId:"bussinessLicense",
-            url:"saveLicense",
+            url:"saveLicense",//PicController
             async:false,
             dataType:'text',
             success:function(data){
@@ -398,7 +398,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"saveAuthenInfo",
+            url:"saveAuthenInfo",//SupplierInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -440,7 +440,7 @@
         $.ajax({
             type:"post",
             data:{"supplierCode":supplierCode , "labelName":labelName},
-            url:"createLabel",
+            url:"createLabel",//SupplierInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -471,7 +471,7 @@
             $.ajax({
                 type:"delete",
                 data:{"supplierCode":supplierCode , "labelName":labelName},
-                url:"deleteLabel",
+                url:"deleteLabel",//SupplierDeleteController
                 async:false,
                 success:function (data) {
                     if (data == "OK"){
@@ -508,7 +508,7 @@
         $.ajaxFileUpload({
             type:"post",
             fileElementId:"materialExcel",
-            url:"uploadMaterialInfo",
+            url:"uploadMaterialInfo",//SupplierInsertController
             data:{"supplierCode":supplierCode},
             async:false,
             dataType:'text',
@@ -577,7 +577,7 @@
         $.ajax({
             type:"put",
             data:data,
-            url:"changeSupplier",
+            url:"changeSupplier",//SupplierUpdateController
             async:false,
             success:function (data) {
                 if(data == "OK"){

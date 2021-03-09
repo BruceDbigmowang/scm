@@ -21,7 +21,7 @@
     function getAllSup() {
         $.ajax({
             type:"get",
-            url:"findAllSupplier",
+            url:"findAllSupplier",//InquirySelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -99,7 +99,7 @@
             type:"post",
             data:data,
             fileElementId:"inquiryFile",
-            url:"writeSomeInquiry",
+            url:"writeSomeInquiry",//InquiryInsertController
             async:false,
             dataType:'text',
             success:function (data) {
@@ -122,7 +122,7 @@
         $.ajaxFileUpload({
             type:"post",
             fileElementId:"inquiryFile",
-            url:"getExcelContent",
+            url:"getExcelContent",//InquiryInsertController
             async:false,
             dataType:'text',
             success:function(data){
@@ -187,7 +187,7 @@
         $.ajaxFileUpload({
             type:"post",
             fileElementId:"productPic",
-            url:"saveProductPic",
+            url:"saveProductPic",//PicController
             async:false,
             dataType:'text',
             success:function(data){

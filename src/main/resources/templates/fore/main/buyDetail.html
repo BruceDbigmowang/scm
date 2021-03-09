@@ -29,7 +29,7 @@
         $.ajax({
             type:"get",
             data:{"buyID":buyID},
-            url:"getBuyOrderDetail",
+            url:"getBuyOrderDetail",//BuySelectController
             async:false,
             success:function (data) {
                 var buySum = data.sum;
@@ -118,7 +118,7 @@
         $.ajax({
             type:"put",
             data:data,
-            url:"changeBuyOrder",
+            url:"changeBuyOrder",//BuyUpdateController
             async:false,
             traditional:true,
             success:function (data) {

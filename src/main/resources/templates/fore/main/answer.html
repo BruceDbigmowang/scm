@@ -72,7 +72,7 @@
         $.ajax({
             type:"get",
             data:{"num":num},
-            url:"getInquiryDetail",
+            url:"getInquiryDetail",//answerSelectController
             async:false,
             success:function (data) {
                 var result = data.result;
@@ -164,7 +164,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"writeAnswer",
+            url:"writeAnswer",//answerInsertController
             async:false,
             traditional:true,
             success:function (data) {
@@ -183,11 +183,14 @@
         })
     }
 
+    //根据填写的单价 自动算出总价并赋值到对应的输入框中
     function getTotalMoney(obj) {
         var price = obj.value;
         var quantity = obj.parentNode.parentNode.parentNode.parentNode.parentNode.childNodes[1].childNodes[1].childNodes[1].childNodes[0].childNodes[1].childNodes[1].innerText;
         obj.parentNode.parentNode.cells[3].childNodes[0].value = accMul(price , quantity);
     }
+    //两个数相乘，保持精度
+    //例如：8.88 * 100 = 888.000000000001
     function accMul(arg1,arg2) {
         var m=0,s1=arg1.toString(),s2=arg2.toString();
         try{m+=s1.split(".")[1].length}catch(e){}

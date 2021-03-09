@@ -23,7 +23,7 @@
         $.ajax({
             data:{"start":start},
             type:"post",
-            url:"findAllSupplier",
+            url:"findAllSupplier",//SupplierSelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -71,7 +71,7 @@
             $.ajax({
                 data:{"start":start},
                 type:"post",
-                url:"findAllSupplier",
+                url:"findAllSupplier",//SupplierSelectController
                 async:false,
                 success:function (data) {
                     $("#allSupplier").html("");
@@ -120,7 +120,7 @@
             $.ajax({
                 data:{"start":start},
                 type:"post",
-                url:"findAllSupplier",
+                url:"findAllSupplier",//SupplierSelectController
                 async:false,
                 success:function (data) {
                     $("#allSupplier").html("");
@@ -163,7 +163,7 @@
         $.ajax({
             data:{"start":start},
             type:"post",
-            url:"findAllSupplier",
+            url:"findAllSupplier",//SupplierSelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -212,7 +212,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"findSomeSupplier",
+            url:"findSomeSupplier",//SupplierSelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -266,7 +266,7 @@
             $.ajax({
                 type:"post",
                 data:data,
-                url:"findSomeSupplier",
+                url:"findSomeSupplier",//SupplierSelectController
                 async:false,
                 success:function (data) {
                     $("#allSupplier").html("");
@@ -321,7 +321,7 @@
             $.ajax({
                 type:"post",
                 data:data,
-                url:"findSomeSupplier",
+                url:"findSomeSupplier",//SupplierSelectController
                 async:false,
                 success:function (data) {
                     $("#allSupplier").html("");
@@ -371,7 +371,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"findSomeSupplier",
+            url:"findSomeSupplier",//SupplierSelectController
             async:false,
             success:function (data) {
                 $("#allSupplier").html("");
@@ -422,7 +422,7 @@
         $.ajax({
             type:"post",
             data:data,
-            url:"createSupplier",
+            url:"createSupplier",//SupplierInsertController
             async:false,
             success:function (data) {
                 if(data == "OK"){
@@ -448,12 +448,12 @@
         window.location.href="forSupplierDetail?supplierCode="+supplierCode;
     }
 
-    //上传物料信息
+    //上传供应商信息
     function uploadSupplier() {
         $.ajaxFileUpload({
             type:"post",
             fileElementId:"supplierExcel",
-            url:"uploadSupplierInfo",
+            url:"uploadSupplierInfo",//SupplierInsertController
             async:false,
             dataType:'text',
             success:function(data){
