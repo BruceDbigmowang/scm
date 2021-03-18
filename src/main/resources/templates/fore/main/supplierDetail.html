@@ -47,9 +47,36 @@
                 $("#supplierName").val(supplier.supplierName);
                 $("#simpleName").val(supplier.simpleName);
                 $("#supplierCode").val(supplier.supplierCode);
-                $("#supplierNature").val(supplier.supplierNature);
-                $("#supplyType").val(supplier.supplyType);
-                $("#relationship").val(supplier.relationship);
+                // $("#supplierNature").val(supplier.supplierNature);
+
+                //控制选中当前月份的前一个月
+                var select = document.getElementById("supplierNature");
+                for (var i = 0; i < select.options.length; i++){
+                    if (select.options[i].value == supplier.supplierNature){
+                        select.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                // $("#supplyType").val(supplier.supplyType);
+                //控制选中当前月份的前一个月
+                var select = document.getElementById("supplyType");
+                for (var i = 0; i < select.options.length; i++){
+                    if (select.options[i].value == supplier.supplyType){
+                        select.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                // $("#relationship").val(supplier.relationship);
+                //控制选中当前月份的前一个月
+                var select = document.getElementById("relationship");
+                for (var i = 0; i < select.options.length; i++){
+                    if (select.options[i].value == supplier.relationship){
+                        select.options[i].selected = true;
+                        break;
+                    }
+                }
                 $("#area").val(supplier.area);
                 $("#website").val(supplier.website);
                 $("#postAddress").val(supplier.contactAddress);
@@ -171,12 +198,29 @@
         })
     }
 
+    function isNumber(val){
+
+        var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+        if(regPos.test(val) || regNeg.test(val)){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
     //添加联系人
     function addContact() {
         var supplierCode = $("#importantCode").val();
         var contactName = $("#contactName").val();
         var contactWay = $("#contactWay").val();
         var contactType = $("#contactType").val();
+        var dept = $("#dept").val();
+        var position = $("#position").val();
+        var email = $("#email").val();
+        var grade = $("#grade").val();
+        var status = $("#contactStatusNew option:selected").val();
 
         if(contactName == ""){
             $.message({
@@ -199,8 +243,29 @@
             });
             return false;
         }
+        if(email != ""){
+            var regex = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g;
+            if (regex.test(email)){
 
-        var data = {"supplierCode":supplierCode , "contactName":contactName , "contactWay":contactWay , "contactType":contactType};
+            }else{
+                $.message({
+                    message:"邮箱地址不合法",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        if(grade != ""){
+            if(!isNumber(grade)){
+                $.message({
+                    message:"服务评分填写错误(只能填写数字)",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+
+        var data = {"supplierCode":supplierCode , "contactName":contactName , "contactWay":contactWay , "contactType":contactType , "dept":dept , "position":position , "email":email , "grade":grade , "status":status};
         $.ajax({
             type:"post",
             data:data,
@@ -267,13 +332,22 @@
                 $("#contactName2").val(data.contactName);
                 $("#contactWay2").val(data.contactWay);
                 $("#score").val(data.grade);
-                $("#contactStatus").val(data.status);
+                // $("#contactStatus").val(data.status);
+                var allOptions = document.getElementById("contactStatus").options;
+                for (i=0; i<allOptions.length; i++){
+                    if (allOptions[i].value == data.status){  // 根据option标签的value来进行判断  测试的代码这里是两个等号
+                        allOptions[i].selected = true;
+                    }
+                }
                 var all_options = document.getElementById("contactType2").options;
                 for (i=0; i<all_options.length; i++){
                     if (all_options[i].value == data.type){  // 根据option标签的value来进行判断  测试的代码这里是两个等号
                         all_options[i].selected = true;
                     }
                 }
+                $("#contactDept").val(data.dept);
+                $("#contactPosition").val(data.position);
+                $("#contactEmail").val(data.email);
             }
         })
     }
@@ -284,9 +358,11 @@
         var contactName = $("#contactName2").val();
         var contactWay = $("#contactWay2").val();
         var contactType = $("#contactType2 option:selected").val();
-        var contactStatus = $("#contactStatus").val();
+        var contactStatus = $("#contactStatus option:selected").val();
         var score = $("#score").val();
-
+        var dept = $("#contactDept").val();
+        var position = $("#contactPosition").val();
+        var email = $("#contactEmail").val();
         if(contactName == ""){
             $.message({
                 message:"请填写联系人姓名",
@@ -315,11 +391,23 @@
             });
             return false;
         }
+        if(email != ""){
+            var regex = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g;
+            if (regex.test(email)){
+
+            }else{
+                $.message({
+                    message:"邮箱地址不合法",
+                    type:"error"
+                });
+                return false;
+            }
+        }
         if(score == ""){
             score = 0;
         }
 
-        var data={"contactId":contactId , "contactName":contactName , "contactWay":contactWay , "contactType":contactType , "contactStatus":contactStatus , "score":score};
+        var data={"contactId":contactId , "contactName":contactName , "contactWay":contactWay , "contactType":contactType , "contactStatus":contactStatus , "score":score , "dept":dept , "position":position , "emial":email};
         $.ajax({
             type:"put",
             data:data,
@@ -535,12 +623,130 @@
         })
     }
 
+    //新增物料信息
+    function saveMaterial() {
+        var supplierCode = getQueryVariable("supplierCode");
+        var kcode = $("#kcode").val();
+        if(kcode == ""){
+            $.message({
+                message:"请填写K编码",
+                type:"error"
+            });
+            return false;
+        }
+        var productName = $("#productName").val();
+        if(productName == ""){
+            $.message({
+                message:"请填写产品名称",
+                type:"error"
+            });
+            return false;
+        }
+        var specification = $("#specification").val();
+        if(specification == ""){
+            $.message({
+                message:"请填写规格型号",
+                type:"error"
+            });
+            return false;
+        }
+        var price = $("#price").val();
+        if(price == ""){
+            $.message({
+                message:"请填写标准价格",
+                type:"error"
+            });
+            return false;
+        }else{
+            if(!isNumber(price)){
+                $.message({
+                    message:"标准价格填写错误(只能填写数字)",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var recentPrice = $("#recentPrice").val();
+        if(recentPrice == ""){
+            recentPrice = price;
+        }else{
+            if(!isNumber(recentPrice)){
+                $.message({
+                    message:"最近采购价格填写错误(只能填写数字)",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var cycle = $("#cycle").val();
+        if(cycle == ""){
+            $.message({
+                message:"请填写标准交货周期",
+                type:"error"
+            });
+            return false;
+        }else{
+            if(!isNumber(cycle)){
+                $.message({
+                    message:"标准交货周期填写错误(只能填写数字)",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var recentCycle = $("#recentCycle").val();
+        if(recentCycle == ""){
+            recentCycle = cycle;
+        }else{
+            if(!isNumber(recentCycle)){
+                $.message({
+                    message:"最近采购交货周期填写错误(只能填写数字)",
+                    type:"error"
+                });
+                return false;
+            }
+        }
+        var data = {"supplierCode":supplierCode , "kcode":kcode , "productName":productName , "specification":specification , "price":price , "recentPrice":recentPrice , "cycle":cycle , "recentCycle":recentCycle};
+        $.ajax({
+            type:"post",
+            data:data,
+            url:"createMaterial",
+            async:false,
+            success:function (data) {
+                if(data == "OK"){
+                    $.message({
+                        message:"物料信息已添加",
+                        type:"success"
+                    });
+                    $("#kcode").val("");
+                    $("#productName").val("");
+                    $("#specification").val("");
+                    $("#price").val("");
+                    $("#recentPrice").val("");
+                    $("#cycle").val("");
+                    $("#recentCycle").val("");
+                    $("#myModal6").modal('hide');
+                    getDetail();
+                }else{
+                    $.message({
+                        message:data,
+                        type:"error"
+                    })
+                }
+            }
+        })
+
+    }
+
     //点击编辑，将基础数据input的readonly去除，并将编辑换成保存
     function clickWrite() {
         document.getElementById("simpleName").removeAttribute('readOnly');
-        document.getElementById("supplierNature").removeAttribute('readOnly');
-        document.getElementById("supplyType").removeAttribute('readOnly');
-        document.getElementById("relationship").removeAttribute('readOnly');
+        // document.getElementById("supplierNature").removeAttribute('readOnly');
+        $('#supplierNature').attr("disabled",false);
+        // document.getElementById("supplyType").removeAttribute('readOnly');
+        $('#supplyType').attr("disabled",false);
+        // document.getElementById("relationship").removeAttribute('readOnly');
+        $('#relationship').attr("disabled",false);
         document.getElementById("area").removeAttribute('readOnly');
         document.getElementById("website").removeAttribute('readOnly');
         document.getElementById("postAddress").removeAttribute('readOnly');
@@ -551,9 +757,12 @@
 
     function clickSave() {
         document.getElementById("simpleName").setAttribute('readOnly','true');
-        document.getElementById("supplierNature").setAttribute('readOnly','true');
-        document.getElementById("supplyType").setAttribute('readOnly','true');
-        document.getElementById("relationship").setAttribute('readOnly','true');
+        // document.getElementById("supplierNature").setAttribute('readOnly','true');
+        $('#supplierNature').attr("disabled",true);
+        // document.getElementById("supplyType").setAttribute('readOnly','true');
+        $('#supplyType').attr("disabled",true);
+        // document.getElementById("relationship").setAttribute('readOnly','true');
+        $('#relationship').attr("disabled",true);
         document.getElementById("area").setAttribute('readOnly','true');
         document.getElementById("website").setAttribute('readOnly','true');
         document.getElementById("postAddress").setAttribute('readOnly','true');
@@ -565,9 +774,9 @@
 
         var supplierCode = $("#supplierCode").val();
         var simpleName = $("#simpleName").val();
-        var supplierNature = $("#supplierNature").val();
-        var supplyType = $("#supplyType").val();
-        var relationship = $("#relationship").val();
+        var supplierNature = $("#supplierNature option:selected").val();
+        var supplyType = $("#supplyType option:selected").val();
+        var relationship = $("#relationship option:selected").val();
         var area = $("#area").val();
         var website = $("#website").val();
         var postAddress = $("#postAddress").val();

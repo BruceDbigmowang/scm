@@ -33,6 +33,7 @@
     <script src="044/js/newsteps.js"></script>
     <script src="044/js/datatables/datatab.js"></script>
     <link href="044/css/plugin/datatables/datatables.css" rel="stylesheet">
+    <script type="text/javascript" src="044/js/date-range-picker/daterangepicker.js"></script>
 </head>
 <body style="background-color: white;">
 <div style="width: 90%;margin:0px auto;">
@@ -52,6 +53,9 @@
 </div>
 
 <script>
+
+
+
     //获取URL中参数的值
     function getQueryVariable(variable){
         var query = window.location.search.substring(1);
@@ -66,6 +70,12 @@
     $(function () {
         loadDetail();
     })
+
+    $(document).ready(function() {
+        $('input[name="validityTime"]').daterangepicker({ singleDatePicker: true , format: 'YYYY-MM-DD'}, function(start, end, label) {
+            console.log(start.toISOString(), end.toISOString(), label);
+        });
+    });
 
     function loadDetail() {
         var num = getQueryVariable("id");
@@ -87,29 +97,102 @@
                     for(var i = 0 ; i < details.length ; i++){
                         var no = i + 1;
                         $("#productList").append("<h5 style='color: #118ADB'>"+"产品"+no+"</h5>");
-                        $("#productList").append('<div class="panel panel-default">\n' +
-                            '  <div class="panel-body">\n' +
-                            '<table class="table">'+
-                            "<tr>"+
-                            "<td>名称:</td>"+"<td>"+details[i].productName+"</td>"+"<td>"+"规格/型号:"+"</td>"+"<td>"+details[i].specification+"</td>"+
-                            "</tr>"+
-                            "<tr>"+
-                            "<td>数量:</td>"+"<td>"+details[i].quantity+"</td>"+"<td>"+"单位:"+"</td>"+"<td>"+details[i].unit+"</td>"+
-                            "</tr>"+
-                            "<tr>"+
-                            "<td>品牌:</td>"+"<td>"+details[i].brand+"</td>"+"<td>"+"备注:"+"</td>"+"<td>"+details[i].note+"</td>"+
-                            "</tr>"+
-                            "<tr>"+
-                            "<td>参考图片:</td>"+'<td colspan="3">'+'<img style="width: 190px;" src="productImage/'+details[i].picName+'">'+"</td>"+
-                            "</tr>"+
-                            '</table>'+
-                            '  </div>\n' +
-                            '</div>'+
-                            '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
-                            "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
-                            "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
-                            '</table>'+"<br>"
-                        );
+                        if(details[i].brand != "" && details[i].note != ""){
+                            $("#productList").append('<div class="panel panel-default">\n' +
+                                '  <div class="panel-body">\n' +
+                                '<table class="table">'+
+                                "<tr>"+
+                                "<td>名称:</td>"+"<td>"+details[i].productName+"</td>"+"<td>"+"规格/型号:"+"</td>"+"<td>"+details[i].specification+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>数量:</td>"+"<td>"+details[i].quantity+"</td>"+"<td>"+"单位:"+"</td>"+"<td>"+details[i].unit+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>品牌:</td>"+"<td>"+details[i].brand+"</td>"+"<td>"+"备注:"+"</td>"+"<td>"+details[i].note+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>参考图片:</td>"+'<td colspan="3">'+'<img style="width: 190px;" src="productImage/'+details[i].picName+'">'+"</td>"+
+                                "</tr>"+
+                                '</table>'+
+                                '  </div>\n' +
+                                '</div>'+
+                                '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
+                                '</table>'+"<br>"
+                            );
+                        }else if( details[i].brand != "" && details[i].note == ""){
+                            $("#productList").append('<div class="panel panel-default">\n' +
+                                '  <div class="panel-body">\n' +
+                                '<table class="table">'+
+                                "<tr>"+
+                                "<td>名称:</td>"+"<td>"+details[i].productName+"</td>"+"<td>"+"规格/型号:"+"</td>"+"<td>"+details[i].specification+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>数量:</td>"+"<td>"+details[i].quantity+"</td>"+"<td>"+"单位:"+"</td>"+"<td>"+details[i].unit+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>品牌:</td>"+"<td>"+details[i].brand+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>参考图片:</td>"+'<td colspan="3">'+'<img style="width: 190px;" src="productImage/'+details[i].picName+'">'+"</td>"+
+                                "</tr>"+
+                                '</table>'+
+                                '  </div>\n' +
+                                '</div>'+
+                                '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
+                                '</table>'+"<br>"
+                            );
+                        }else if(details[i].brand == "" && details[i].note != ""){
+                            $("#productList").append('<div class="panel panel-default">\n' +
+                                '  <div class="panel-body">\n' +
+                                '<table class="table">'+
+                                "<tr>"+
+                                "<td>名称:</td>"+"<td>"+details[i].productName+"</td>"+"<td>"+"规格/型号:"+"</td>"+"<td>"+details[i].specification+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>数量:</td>"+"<td>"+details[i].quantity+"</td>"+"<td>"+"单位:"+"</td>"+"<td>"+details[i].unit+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>"+"备注:"+"</td>"+"<td>"+details[i].note+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>参考图片:</td>"+'<td colspan="3">'+'<img style="width: 190px;" src="productImage/'+details[i].picName+'">'+"</td>"+
+                                "</tr>"+
+                                '</table>'+
+                                '  </div>\n' +
+                                '</div>'+
+                                '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
+                                '</table>'+"<br>"
+                            );
+                        }else{
+                            $("#productList").append('<div class="panel panel-default">\n' +
+                                '  <div class="panel-body">\n' +
+                                '<table class="table">'+
+                                "<tr>"+
+                                "<td>名称:</td>"+"<td>"+details[i].productName+"</td>"+"<td>"+"规格/型号:"+"</td>"+"<td>"+details[i].specification+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<td>数量:</td>"+"<td>"+details[i].quantity+"</td>"+"<td>"+"单位:"+"</td>"+"<td>"+details[i].unit+"</td>"+
+                                "</tr>"+
+                                "<tr>"+
+                                "<tr>"+
+                                "<td>参考图片:</td>"+'<td colspan="3">'+'<img style="width: 190px;" src="productImage/'+details[i].picName+'">'+"</td>"+
+                                "</tr>"+
+                                '</table>'+
+                                '  </div>\n' +
+                                '</div>'+
+                                '<table class="table">'+"<tr>"+"<td style='width: 80px;'>品牌</td>"+"<td>"+'<input name="brand" class="form-control">'+"</td>"+"<td style='width:85px'>型号</td>"+"<td>"+'<input name="specification" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>含税单价</td>'+"<td>"+'<input name="price" class="form-control" onblur="getTotalMoney(this)">'+"</td>"+"<td>合计价格</td>"+"<td>"+'<input name="totalPrice" class="form-control">'+"</td>"+"</tr>"+
+                                "<tr>"+'<td><span style="color:red;">*</span>交货周期(/天)</td>'+"<td>"+'<input name="cycle" class="form-control">'+"</td>"+"<td>报价有效期</td>"+"<td>"+'<input name="validityTime" class="form-control">'+"</td>"+"</tr>"+
+                                '</table>'+"<br>"
+                            );
+                        }
+
                     }
                     $("#btnDIV").show();
                 }else if(result == "1"){
@@ -123,10 +206,11 @@
                         type:"error"
                     })
                 }else if(result == "3"){
-                    $.message({
-                        message:"您已完成报价",
-                        type:"error"
-                    })
+                    // $.message({
+                    //     message:"您已完成报价",
+                    //     type:"error"
+                    // })
+                    window.location.href="foreFinish";
                 }
 
             }
@@ -169,10 +253,11 @@
             traditional:true,
             success:function (data) {
                 if(data == "OK"){
-                    $.message({
-                        message:"已完成报价",
-                        type:"success"
-                    });
+                    // $.message({
+                    //     message:"已完成报价",
+                    //     type:"success"
+                    // });
+                    window.location.href="foreFinish";
                 }else{
                     $.message({
                         message:data,

@@ -1,6 +1,7 @@
 package com.scm.controller.supplier;
 
 import com.scm.pojo.Account;
+import com.scm.pojo.Material;
 import com.scm.pojo.Supplier;
 import com.scm.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +87,8 @@ public class SupplierInsertController {
      * 创建新的联系人
      */
     @RequestMapping(value = "createContact" , method = RequestMethod.POST)
-    public String saveContact(String supplierCode , String contactName , String contactWay , String contactType) throws SQLException {
-        return supplierService.saveContact(supplierCode , contactName , contactWay , contactType);
+    public String saveContact(String supplierCode , String contactName , String contactWay , String contactType , String dept , String position , String email , String grade , String status) throws SQLException {
+        return supplierService.saveContact(supplierCode , contactName , contactWay , contactType , dept , position , email , grade , status);
     }
 
     /**
@@ -128,6 +129,23 @@ public class SupplierInsertController {
         }else{
             return errorInfo;
         }
+    }
+
+    /**
+     * 新增物料信息
+     */
+    @RequestMapping(value = "createMaterial" , method = RequestMethod.POST)
+    public String saveMaterial(String supplierCode , String kcode , String productName , String specification , BigDecimal price , BigDecimal recentPrice , int cycle , int recentCycle){
+        Material material = new Material();
+        material.setSupplierCode(supplierCode);
+        material.setKcode(kcode);
+        material.setMaterialName(productName);
+        material.setSpecification(specification);
+        material.setRecentPrice(recentPrice);
+        material.setStandardPrice(price);
+        material.setStandardDeadline(cycle);
+        material.setRecentDeadline(recentCycle);
+        return supplierService.saveMaterial(material);
     }
 
     /**

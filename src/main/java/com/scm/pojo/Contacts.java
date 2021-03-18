@@ -18,6 +18,9 @@ public class Contacts {
     String type;
     String contactName;
     String contactWay;
+    String dept;
+    String position;
+    String email;
     String status;
     BigDecimal grade;
     String mainContact;
@@ -60,6 +63,30 @@ public class Contacts {
 
     public void setContactWay(String contactWay) {
         this.contactWay = contactWay;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getStatus() {

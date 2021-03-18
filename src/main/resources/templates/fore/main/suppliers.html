@@ -202,8 +202,8 @@
 
     function loadSomeSupplier() {
         var name = $("#name").val();
-        var nature = $("#nature").val();
-        var type = $("#type").val();
+        var nature = $("#nature option:selected").val();
+        var type = $("#type option:selected").val();
         var auth = $("#auth option:selected").val();
         var forbidden = $("#forb option:selected").val();
         start = 0;
@@ -251,8 +251,8 @@
 
     function loadSomeSupplierPrevious() {
         var name = $("#name").val();
-        var nature = $("#nature").val();
-        var type = $("#type").val();
+        var nature = $("#nature option:selected").val();
+        var type = $("#type option:selected").val();
         var auth = $("#auth option:selected").val();
         var forbidden = $("#forb option:selected").val();
         if(start == 0){
@@ -306,8 +306,8 @@
 
     function loadSomeSupplierNext() {
         var name = $("#name").val();
-        var nature = $("#nature").val();
-        var type = $("#type").val();
+        var nature = $("#nature option:selected").val();
+        var type = $("#type option:selected").val();
         var auth = $("#auth option:selected").val();
         var forbidden = $("#forb option:selected").val();
         if(start == pages - 1){
@@ -361,8 +361,8 @@
 
     function loadSomeSupplierLast() {
         var name = $("#name").val();
-        var nature = $("#nature").val();
-        var type = $("#type").val();
+        var nature = $("#nature option:selected").val();
+        var type = $("#type option:selected").val();
         var auth = $("#auth option:selected").val();
         var forbidden = $("#forb option:selected").val();
         start = pages - 1;
@@ -411,9 +411,9 @@
     function saveSupplier() {
         var supplierName = $("#supplierName").val();
         var simpleName = $("#simpleName").val();
-        var supplierNature = $("#supplierNature").val();
-        var supplyType = $("#supplyType").val();
-        var relationship = $("#relationship").val();
+        var supplierNature = $("#supplierNature option:selected").val();
+        var supplyType = $("#supplyType option:selected").val();
+        var relationship = $("#relationship option:selected").val();
         var area = $("#area option:selected").val();
         var postAddress = $("#postAddress").val();
         var addressDetail = $("#addressDetail").val();
@@ -479,8 +479,8 @@
 
     function restSearch() {
         $("#name").val("");
-        $("#nature").val("");
-        $("#type").val("");
+        $("#nature option:first").prop("selected", 'selected');
+        $("#type option:first").prop("selected", 'selected');
         $("#auth option:first").prop("selected", 'selected');
         $("#forb option:first").prop("selected", 'selected');
     }
@@ -488,9 +488,9 @@
     function clearInput() {
         $("#supplierName").val("");
         $("#simpleName").val("");
-        $("#supplierNature").val("");
-        $("#supplyType").val("");
-        $("#relationship").val("");
+        $("#supplierNature option:first").prop("selected", 'selected');
+        $("#supplyType option:first").prop("selected", 'selected');
+        $("#relationship option:first").prop("selected", 'selected');
         $("#area option:first").prop("selected", 'selected');
         $("#website").val("");
         $("#postAddress").val("");

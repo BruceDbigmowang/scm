@@ -102,14 +102,27 @@ public class SupplierService {
      * 是否是主要联系人：F(false)
      */
     @Transactional
-    public String saveContact(String supplierCode , String name , String phone , String type)throws SQLException{
+    public String saveContact(String supplierCode , String name , String phone , String type , String dept , String position , String email , String grade , String status)throws SQLException{
         Contacts contacts = new Contacts();
         contacts.setSupplierCode(supplierCode);
         contacts.setContactName(name);
         contacts.setContactWay(phone);
+        if(!"".equals(dept)){
+            contacts.setDept(dept);
+        }
+        if(!"".equals(position)){
+            contacts.setPosition(position);
+        }
+        if(!"".equals(email)){
+            contacts.setEmail(email);
+        }
+        if(!"".equals(grade)){
+            contacts.setGrade(new BigDecimal(grade));
+        }else{
+            contacts.setGrade(BigDecimal.ZERO);
+        }
         contacts.setType(type);
-        contacts.setStatus("正常");
-        contacts.setGrade(BigDecimal.ZERO);
+        contacts.setStatus(status);
         contacts.setMainContact("F");
         contactDAO.save(contacts);
         return "OK";
@@ -119,7 +132,7 @@ public class SupplierService {
      * 更新联系人信息
      */
     @Transactional
-    public String updateContact(int contactId , String name , String phone , String type, String status , BigDecimal grade)throws SQLException{
+    public String updateContact(int contactId , String name , String phone , String type, String status , BigDecimal grade , String dept , String position , String email)throws SQLException{
         Contacts contacts = contactDAO.findById(contactId).get();
         String mainCon = contacts.getMainContact();
         String type2 = contacts.getType();
@@ -132,6 +145,15 @@ public class SupplierService {
         contacts.setContactWay(phone);
         contacts.setStatus(status);
         contacts.setGrade(grade);
+        if(!"".equals(dept)){
+            contacts.setDept(dept);
+        }
+        if(!"".equals(position)){
+            contacts.setPosition(position);
+        }
+        if(!"".equals(email)){
+            contacts.setEmail(email);
+        }
         contactDAO.save(contacts);
         //若该联系人为某一供应商的商务对接人，则还需要修改供应商表中的信息
         if(type.equals("bussiness") && mainCon.equals("T")){
@@ -409,6 +431,19 @@ public class SupplierService {
             targetNum = targetNum + 1;
         }
         return "成功导入"+targetNum+"条数据";
+    }
+
+    /**
+     * 单个创建物料信息
+     */
+    @Transactional
+    public String saveMaterial(Material material){
+        try{
+            materialDAO.save(material);
+        }catch (Exception e){
+            return e.getMessage();
+        }
+        return "OK";
     }
 
 

@@ -33,14 +33,14 @@ public class SupplierUpdateController {
      * 修改联系人信息
      */
     @RequestMapping(value = "changeContact" , method = RequestMethod.PUT)
-    public String updateContact(int contactId , String contactName , String contactWay , String contactType , String contactStatus, String score) throws SQLException {
+    public String updateContact(int contactId , String contactName , String contactWay , String contactType , String contactStatus, String score , String dept , String position , String email) throws SQLException {
         BigDecimal grade = null;
         try{
             grade = new BigDecimal(score).setScale(2, RoundingMode.HALF_UP);
         }catch (Exception e){
             return "服务评分只能填写数字";
         }
-        return supplierService.updateContact(contactId , contactName , contactWay , contactType, contactStatus , grade);
+        return supplierService.updateContact(contactId , contactName , contactWay , contactType, contactStatus , grade , dept , position , email);
     }
 
     /**

@@ -27,13 +27,31 @@
                     <td>供应商代码</td>
                     <td><input id="supplierCode" class="form-control" readonly></td>
                     <td>供应商性质</td>
-                    <td><input id="supplierNature" class="form-control" readonly></td>
+                    <td>
+                        <select id="supplierNature" class="form-control" disabled>
+                            <option value="">--请选择--</option>
+                            <option value="生产厂商">生产厂商</option>
+                            <option value="代理商">代理商</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>供应类别</td>
-                    <td><input id="supplyType" class="form-control" readonly></td>
+                    <td>
+                        <select id="supplyType" class="form-control" disabled>
+                            <option value="">--请选择--</option>
+                            <option value="刀具">刀具</option>
+                            <option value="MRO">MRO</option>
+                        </select>
+                    </td>
                     <td>供应商关系</td>
-                    <td><input id="relationship" class="form-control" readonly></td>
+                    <td>
+                        <select id="relationship" class="form-control" disabled>
+                            <option value="">--请选择--</option>
+                            <option value="战略供应商">战略供应商</option>
+                            <option value="非战略供应商">非战略供应商</option>
+                        </select>
+                    </td>
                     <td>所在地区</td>
                     <td><input id="area" class="form-control" readonly></td>
                     <td>公司网址</td>
@@ -110,7 +128,9 @@
         </div><br>
         <div class="row" style="background-color: white;">
             <table class="table" style="font-size: 15px;">
-                <caption><p style="display: inline-block;font-size: 20px;color: black;">物料信息</p><button style="margin-left: 80%" class="btn btn-primary" data-toggle="modal" data-target="#myModal5" onclick="getSupplierForMaterial()">导入物料</button></caption>
+                <caption><p style="display: inline-block;font-size: 20px;color: black;">物料信息</p>
+                    <button type="button" style="margin-left: 70%;" class="btn btn-primary" data-toggle="modal" data-target="#myModal6">新增物料</button>
+                    <button style="margin-left: 2%" class="btn btn-primary" data-toggle="modal" data-target="#myModal5" onclick="getSupplierForMaterial()">导入物料</button></caption>
                 <thead style="font-size: 15px;">
                 <tr>
                     <th>产品名称</th>
@@ -183,6 +203,39 @@
                                 </select>
                             </td>
                         </tr>
+                        <tr>
+                            <td>部门</td>
+                            <td>
+                                <input id="dept" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>职位</td>
+                            <td>
+                                <input id="position" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>邮箱</td>
+                            <td>
+                                <input id="email" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>服务评分</td>
+                            <td>
+                                <input id="grade" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>状态</td>
+                            <td>
+                                <select id="contactStatusNew" class="form-control">
+                                    <option value="在职">在职</option>
+                                    <option value="离职">离职</option>
+                                </select>
+                            </td>
+                        </tr>
 
                     </table>
                 </div>
@@ -224,8 +277,25 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>部门</td>
+                            <td><input id="contactDept" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>职位</td>
+                            <td><input id="contactPosition" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>邮箱</td>
+                            <td><input id="contactEmail" class="form-control"></td>
+                        </tr>
+                        <tr>
                             <td>状态</td>
-                            <td><input id="contactStatus" class="form-control"></td>
+                            <td>
+                                <select id="contactStatus" class="form-control">
+                                    <option value="在职">在职</option>
+                                    <option value="离职">离职</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td>服务评分</td>
@@ -352,6 +422,53 @@
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
                     <button class="btn btn-primary" type="button" onclick="uploadMaterial()">提交</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+<!--    单个新增物料信息-->
+    <div class="modal fade" id="myModal6"  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">新增物料</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tr>
+                            <td>K编码</td>
+                            <td><input id="kcode" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>产品名称</td>
+                            <td><input id="productName" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>规格型号</td>
+                            <td><input id="specification" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>标准价格(元/件)</td>
+                            <td><input id="price" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>最近采购价格(元/件)</td>
+                            <td><input id="recentPrice" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td>标准交货周期(天)</td>
+                            <td><input id="cycle" class="form-control"></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 145px;">最近采购交货周期(天)</td>
+                            <td><input id="recentCycle" class="form-control"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                    <button class="btn btn-primary" type="button" onclick="saveMaterial()">保存</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

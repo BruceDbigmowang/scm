@@ -142,4 +142,12 @@ public class PageController {
         return "fore/main/userManage";
     }
 
+    /**
+     * 跳转至报价完成界面
+     */
+    @RequestMapping("/foreFinish")
+    public String toFinish(){
+        return "fore/main/finishPage";
+    }
+
 }
